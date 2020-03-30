@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
-public class loggerTester : MonoBehaviour {
+public class loggerTesterCorrectness : MonoBehaviour {
 	loggerSrvLib.Logger m_logger;
 	Random m_rnd = new Random();
 	List<string> m_lstStandard = new List<string>();
