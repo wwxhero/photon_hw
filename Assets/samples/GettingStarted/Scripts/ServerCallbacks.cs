@@ -26,26 +26,31 @@ namespace Bolt.Samples.GettingStarted
 		{
 			registerDoneCallback(() =>
 			{
-				Debug.LogFormat("Shutdown Done with Reason: {0}", disconnectReason);
+				DebugLog.Format("Server Shutdown Done with Reason: {0}", disconnectReason);
 				SceneManager.LoadScene(0);
 			});
 		}
 
 		public override void SessionCreated(UdpSession session)
 		{
-			Debug.LogWarning("Session created");
-			
+			DebugLog.Warning("Session created");
+
 			var photonSession = session as PhotonSession;
 
+			LogPhotonSession(photonSession);
+		}
+
+		public static void LogPhotonSession(PhotonSession photonSession)
+		{
 			if (photonSession != null)
 			{
-				Debug.LogWarning(photonSession.HostName);
-				Debug.LogWarning(photonSession.IsOpen);
-				Debug.LogWarning(photonSession.IsVisible);
+				DebugLog.Warning(photonSession.HostName);
+				DebugLog.Warning(photonSession.IsOpen);
+				DebugLog.Warning(photonSession.IsVisible);
 
 				foreach(var key in photonSession.Properties.Keys)
 				{
-					Debug.LogWarningFormat("{0} = {1}", key, photonSession.Properties[key]);
+					DebugLog.WarningFormat("{0} = {1}", key, photonSession.Properties[key]);
 				}
 			}
 		}

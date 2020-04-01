@@ -12,7 +12,7 @@ namespace Bolt.Samples.GettingStarted
 	{
 		private bool _showGui = true;
 		private Coroutine _timerRoutine;
-
+		private string c_sessionId = "d885c66f-5474-4239-a25f-a2a3ad7f9c8b";
 		private void Awake()
 		{
 			Application.targetFrameRate = 60;
@@ -50,7 +50,7 @@ namespace Bolt.Samples.GettingStarted
 		{
 			if (BoltNetwork.IsServer)
 			{
-				string matchName = Guid.NewGuid().ToString();
+				string matchName = c_sessionId; //Guid.NewGuid().ToString();
 
                 var props = new PhotonRoomProperties();
 
@@ -74,7 +74,7 @@ namespace Bolt.Samples.GettingStarted
                 _timerRoutine = StartCoroutine(ShutdownAndStartServer());
             }
 		}
-		
+
 		public override void BoltShutdownBegin(AddCallback registerDoneCallback)
 		{
 			registerDoneCallback(() => {
@@ -84,12 +84,12 @@ namespace Bolt.Samples.GettingStarted
 
 		public override void SessionListUpdated(Map<Guid, UdpSession> sessionList)
 		{
-			if (_timerRoutine != null)  { 
+			if (_timerRoutine != null)  {
 				StopCoroutine(_timerRoutine);
 				_timerRoutine = null;
 			}
-			
-			Debug.LogFormat("Session list updated: {0} total sessions", sessionList.Count);
+
+			DebugLog.Format("Session list updated: {0} total sessions", sessionList.Count);
 
 			foreach (var session in sessionList)
 			{
@@ -97,18 +97,26 @@ namespace Bolt.Samples.GettingStarted
 
 				if (photonSession.Source == UdpSessionSource.Photon)
 				{
-					BoltNetwork.Connect(photonSession);
+					var s = photonSession as UdpKit.Platform.Photon.PhotonSession;
+                    if (s.HostName == c_sessionId)
+                    {
+                        BoltNetwork.Connect(photonSession);
+                        DebugLog.WarningFormat("Connect to session:{0}", photonSession);
+                    }
+                    GS_ServerCallbacks.LogPhotonSession(s);
+
 				}
 			}
 		}
-		
+
 		// Utils
-		
-		private static IEnumerator ShutdownAndStartServer(int timeout = 10)
+
+		private static IEnumerator ShutdownAndStartServer(int timeout = 100)
 		{
 			yield return new WaitForSeconds(timeout);
 
 			BoltLog.Warn("No server found, restarting");
+			DebugLog.Warning("No server found, restarting");
 			BoltNetwork.ShutdownImmediate();
 		}
 	}
