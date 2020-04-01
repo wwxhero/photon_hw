@@ -84,9 +84,10 @@ namespace Bolt.Samples.GettingStarted
                 flash.Send();
             }
         }
-
+        //Color is removed from state, since color change is not a frequently happening event
         void ColorChanged()
         {
+            DebugLog.Warning("State.CubeColor = ColorChanged");
             GetComponent<Renderer>().material.color = state.CubeColor;
         }
 
@@ -96,7 +97,7 @@ namespace Bolt.Samples.GettingStarted
             {
                 WeaponObjects[i].SetActive(false);
             }
-
+            DebugLog.Format("Weapon active index:{0}", state.WeaponActiveIndex);
             if (state.WeaponActiveIndex >= 0)
             {
                 int objectId = state.WeaponArray[state.WeaponActiveIndex].WeaponId;

@@ -32,6 +32,10 @@ public class InteractiveBehavior : Bolt.EntityBehaviour<IInteractiveState>
 		{
 			GetComponent<MeshRenderer>().material.color = state.Color;
 		});
+
+		string [] ownership = {"not owned", "owner"};
+		int ownership_i = entity.IsOwner ? 1 : 0;
+		DebugLog.Format("InteractiveBehavior.Attached:{0}", ownership[ownership_i]);
 	}
 
 	private void Update()
