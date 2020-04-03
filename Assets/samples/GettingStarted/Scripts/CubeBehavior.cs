@@ -36,6 +36,10 @@ namespace Bolt.Samples.GettingStarted
 
             // NEW: we also setup a callback for whenever the index changes
             state.AddCallback("WeaponActiveIndex", WeaponActiveIndexChanged);
+
+            string [] ownership = {"not owned", "owner"};
+            int ownership_i = entity.IsOwner ? 1 : 0;
+            DebugLog.Format("CubeBehavior.Attached:{0}", ownership[ownership_i]);
         }
 
         void OnGUI()
