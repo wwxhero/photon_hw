@@ -60,6 +60,16 @@ public class InteractiveBehavior : Bolt.EntityBehaviour<IInteractiveState>
 			{
 				state.Color = normalColor;
 			}
+
+			if (Input.GetKeyDown(KeyCode.R))
+			{
+				const float c_angleDelta = 5;
+				foreach (Transform t_c in transform)
+				{
+					t_c.RotateAround(transform.position, transform.up, c_angleDelta);
+				}
+			}
+
 		}
 	}
 

@@ -111,7 +111,7 @@ namespace Bolt.Samples.GettingStarted
 
 		// Utils
 
-		private static IEnumerator ShutdownAndStartServer(int timeout = 100)
+		private static IEnumerator ShutdownAndStartServer(int timeout = 10)
 		{
 			yield return new WaitForSeconds(timeout);
 
