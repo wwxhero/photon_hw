@@ -6,10 +6,12 @@ public class TestRotate : Bolt.EntityBehaviour<IJointState> {
 
 	// Use this for initialization
 	public Transform [] m_refTran;
+	public LoggerAvatar m_logger = new LoggerAvatar();
 
 	public override void Attached()
 	{
 		state.SetTransforms(state.JointTransform, transform);
+		m_logger.Initialize(transform);
 	}
 
 	void Start () {
@@ -18,6 +20,7 @@ public class TestRotate : Bolt.EntityBehaviour<IJointState> {
 
 	// Update is called once per frame
 	void Update () {
+		m_logger.Logout();
 		if (!entity.IsAttached
 		 || !entity.IsOwner
 		 ||	null == m_refTran)
@@ -39,5 +42,10 @@ public class TestRotate : Bolt.EntityBehaviour<IJointState> {
             refTran.Rotate(new Vector3(0, c_angleDelta, 0));
 		}
 
+	}
+
+	void OnDestroy()
+	{
+		m_logger.Close();
 	}
 }
