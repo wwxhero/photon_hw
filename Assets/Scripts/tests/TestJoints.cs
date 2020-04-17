@@ -5,9 +5,7 @@ using UnityEngine;
 public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 
 	// Use this for initialization
-
-	private List<Transform> m_lstChain = new List<Transform>();
-
+	private List<Transform> m_lstChain = new List<Transform>()
 	public override void Attached()
 	{
 		state.SetTransforms(state.JointTransform, transform);
@@ -27,9 +25,6 @@ public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 		}
 	}
 
-	void Start () {
-
-	}
 
 	// Update is called once per frame
 	void Update () {
@@ -53,7 +48,4 @@ public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 		}
 	}
 
-	void OnDestroy()
-	{
-	}
 }
