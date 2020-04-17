@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 
-	// Use this for initialization
-	private List<Transform> m_lstChain = new List<Transform>()
+    // Use this for initialization
+    private List<Transform> m_lstChain = new List<Transform>();
 	public override void Attached()
 	{
 		state.SetTransforms(state.JointTransform, transform);
@@ -27,7 +27,8 @@ public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 		if (!entity.IsAttached
 		 || !entity.IsOwner
 		 || !(m_lstChain.Count > 0))
