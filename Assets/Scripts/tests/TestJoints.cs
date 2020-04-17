@@ -5,8 +5,7 @@ using UnityEngine;
 public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 
 	// Use this for initialization
-	private List<Transform> m_lstChain = new List<Transform>();
-	private LoggerAvatar	m_logger  = new LoggerAvatar();
+	private List<Transform> m_lstChain = new List<Transform>()
 	public override void Attached()
 	{
 		state.SetTransforms(state.JointTransform, transform);
@@ -24,15 +23,8 @@ public class TestJoints : Bolt.EntityBehaviour<IJointState> {
 				}
 			}
 		}
-		m_logger.Initialize(transform);
 	}
-	public override void Detached()
-	{
-		m_logger.Close();
-	}
-	void Start () {
 
-	}
 
 	// Update is called once per frame
 	void Update () {

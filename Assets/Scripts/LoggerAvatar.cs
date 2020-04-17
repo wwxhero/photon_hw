@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoggerAvatar {
+public class LoggerAvatar : MonoBehaviour {
 	loggerSrvLib.Logger m_logger;
 	Transform m_tranform;
 	List<Transform> m_lstTrans = new List<Transform>();
@@ -59,5 +59,18 @@ public class LoggerAvatar {
 	{
 		m_logger.Close();
 		m_logger = null;
+	}
+
+	void Start()
+	{
+		Initialize(transform);
+	}
+	void Update()
+	{
+		Logout();
+	}
+	void OnDestroy()
+	{
+		Close();
 	}
 }

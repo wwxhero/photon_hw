@@ -23,6 +23,8 @@ namespace Bolt.Samples.GettingStarted
 
             entity_1.SetParent(entity_0);
             entity_2.SetParent(entity_1);
+
+            entity_0.gameObject.AddComponent<LoggerAvatar>();
 		}
 
 		public override void OnEvent(LogEvent evnt)
