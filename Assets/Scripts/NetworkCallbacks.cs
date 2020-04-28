@@ -5,12 +5,19 @@ using UnityEngine;
 namespace Bolt.Samples.GettingStarted
 {
 	[BoltGlobalBehaviour("Tutorial1")]
+	//FHWA ScenarioControl Corresponding class
 	public class NetworkCallbacks : Bolt.GlobalEventListener
 	{
 		List<string> logMessages = new List<string>();
 
-		public override void SceneLoadLocalDone(string scene)
+		public override void SceneLoadLocalDone(string a_scene)
 		{
+			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
+			Debug.Assert(null != scenario_obj);
+			ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
+			scenario_ctrl.LoadLocalAvatar();
+
+
 			// randomize a position
 			var spawnPosition = new Vector3(Random.Range(-8, 8), 1, Random.Range(-8, 8));
 
@@ -21,10 +28,10 @@ namespace Bolt.Samples.GettingStarted
 			spawnPosition.x += 1f;
 			BoltEntity entity_2 = BoltNetwork.Instantiate(BoltPrefabs.Joint, spawnPosition, Quaternion.identity);
 
-            entity_1.SetParent(entity_0);
-            entity_2.SetParent(entity_1);
+			entity_1.SetParent(entity_0);
+			entity_2.SetParent(entity_1);
 
-            entity_0.gameObject.AddComponent<LoggerAvatar>();
+			entity_0.gameObject.AddComponent<LoggerAvatar>();
 		}
 
 		public override void OnEvent(LogEvent evnt)
@@ -46,5 +53,7 @@ namespace Bolt.Samples.GettingStarted
 
 			GUILayout.EndArea();
 		}
+
+
 	}
 }
