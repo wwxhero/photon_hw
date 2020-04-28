@@ -12,7 +12,7 @@ namespace Bolt.Samples.GettingStarted
 	{
 		private bool _showGui = true;
 		private Coroutine _timerRoutine;
-		private string c_sessionId = "d885c66f-5474-4239-a25f-a2a3ad7f9c8b";
+		//private string c_sessionId = "d885c66f-5474-4239-a25f-a2a3ad7f9c8b";
 		private void Awake()
 		{
 			Application.targetFrameRate = 60;
@@ -50,7 +50,7 @@ namespace Bolt.Samples.GettingStarted
 		{
 			if (BoltNetwork.IsServer)
 			{
-				string matchName = c_sessionId; //Guid.NewGuid().ToString();
+				string matchName = Guid.NewGuid().ToString(); // c_sessionId;
 
                 var props = new PhotonRoomProperties();
 
@@ -98,7 +98,7 @@ namespace Bolt.Samples.GettingStarted
 				if (photonSession.Source == UdpSessionSource.Photon)
 				{
 					var s = photonSession as UdpKit.Platform.Photon.PhotonSession;
-                    if (s.HostName == c_sessionId)
+                    //if (s.HostName == c_sessionId)
                     {
                         BoltNetwork.Connect(photonSession);
                         DebugLog.WarningFormat("Connect to session:{0}", photonSession);
