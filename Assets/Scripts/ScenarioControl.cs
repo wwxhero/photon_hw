@@ -102,9 +102,25 @@ public class ScenarioControl : MonoBehaviour
 		public static string s_height = "height";
 		public static string s_width = "width";
 		public static string s_depth = "depth";
+
+		public void DbgLog()
+		{
+
+			string log = string.Format("\nheight:{0}\nwidth:{1}\ndepth:{2}"
+							, height, width, depth);
+			foreach (object obj in lstPeds)
+			{
+				Ped ped = (Ped)obj;
+				log += string.Format("\n\tIP:{0}\n\tname:{1}\n\tpos:{2}\n\trot:{3}"
+							, ped.ip, ped.name, ped.pos.ToString(), ped.rot.ToString());
+			}
+			DebugLog.Warning(log);
+
+		}
 	};
 
 	public ConfAvatar m_confAvatar;
+	bool m_debug = true;
 	// Use this for initialization
 	public void LoadLocalAvatar()
 	{
@@ -152,8 +168,8 @@ public class ScenarioControl : MonoBehaviour
 								}
 								Vector3 p = new Vector3(val[0], val[1], val[2]);
 								Vector3 r = new Vector3(val[3], val[4], val[5]);
-								m_confAvatar.addPedestrian(name_ped_attr.ToString()
-															, ip_ped_attr.ToString()
+								m_confAvatar.addPedestrian(name_ped_attr.Value
+															, ip_ped_attr.Value
 															, p, r);
 							}
 						}
@@ -172,6 +188,8 @@ public class ScenarioControl : MonoBehaviour
 			Debug.LogError("scene load failed!");
 			Debug.LogError(e.Message);
 		}
+		if (m_debug)
+			m_confAvatar.DbgLog();
 	}
 
 
