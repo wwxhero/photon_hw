@@ -92,10 +92,10 @@ public class ScenarioControl : MonoBehaviour
 			DebugLog.Warning(log);
 		}
 	};
-
 	public ConfAvatar m_confAvatar;
+	public GameObject m_pedPrefab;
 	bool m_debug = true;
-	bool m_mockIp = true;
+	bool m_mockIp = false;
 	GameObject m_ownPed;
 	Dictionary<int, GameObject> m_peerPeds;
 
@@ -133,7 +133,8 @@ public class ScenarioControl : MonoBehaviour
 						localIps.Add(ip.GetHashCode());
 					}
 				}
-				throw new Exception("No network adapters with an IPv4 address in the system!");
+				if (!(localIps.Count > 0))
+				    throw new Exception("No network adapters with an IPv4 address in the system!");
 			}
 			XmlNodeList children = root.ChildNodes;
 			for (int i_node = 0; i_node < children.Count; i_node++)
