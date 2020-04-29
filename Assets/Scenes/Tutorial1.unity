@@ -486,6 +486,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_pedPrefab: {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539,
     type: 2}
+  m_ownPed: {fileID: 0}
+  m_lstNetworkingJoints:
+  - root
+  - upperleg01.R
+  - lowerleg01.L
+  - spine02
+  - foot.R
+  - clavicle.R
+  - neck02
+  - upperarm01.R
+  - lowerarm01.L
+  - wrist.L
+  - upperleg01.L
+  - spine04
+  - lowerleg01.R
+  - foot.L
+  - clavicle.L
+  - toe2-1.L
+  - upperarm01.L
+  - head
+  - lowerarm01.R
+  - wrist.R
+  - toe2-1.R
 --- !u!4 &1659436058 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4420685133569782, guid: 79b73655e226e45c88b90fd215605ca6,

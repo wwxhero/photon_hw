@@ -96,9 +96,17 @@ public class ScenarioControl : MonoBehaviour
 	public GameObject m_pedPrefab;
 	bool m_debug = true;
 	bool m_mockIp = false;
-	GameObject m_ownPed;
-	Dictionary<int, GameObject> m_peerPeds;
-
+	[HideInInspector] public GameObject m_ownPed;
+	[HideInInspector] public int m_ownPedId;
+	[HideInInspector] public Dictionary<int, GameObject> m_Peds = new Dictionary<int, GameObject>();
+	[HideInInspector] public string[] m_lstNetworkingJoints = {
+									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
+									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
+									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
+									"lowerleg01.R",		"foot.L",			"clavicle.L",		"toe2-1.L",
+									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
+									"toe2-1.R"
+								};
 	// Use this for initialization
 	public void LoadLocalAvatar()
 	{
@@ -166,8 +174,8 @@ public class ScenarioControl : MonoBehaviour
 								}
 								Vector3 p = new Vector3(val[0], val[1], val[2]);
 								Vector3 r = new Vector3(val[3], val[4], val[5]);
-								int ipPedCode = IPAddress.Parse(ip_ped_attr.Value).GetHashCode();
-								bool ownPed = (localIps.Contains(ipPedCode));
+								int idPed = IPAddress.Parse(ip_ped_attr.Value).GetHashCode();
+								bool ownPed = (localIps.Contains(idPed));
 								if (m_debug)
 								{
 									DebugLog.Format("CreatePed({0}, {1}, {2}, {3})\n"
@@ -180,9 +188,11 @@ public class ScenarioControl : MonoBehaviour
 								GameObject ped = Instantiate(m_pedPrefab, p, q);
 								ped.name = name_ped_attr.Value;
 								if (ownPed)
+								{
 									m_ownPed = ped;
-								else
-									m_peerPeds[ipPedCode] = ped;
+									m_ownPedId = idPed;
+								}
+								m_Peds[idPed] = ped;
 							}
 						}
 					}
