@@ -99,11 +99,6 @@ public class ScenarioControl : MonoBehaviour
 	GameObject m_ownPed;
 	Dictionary<int, GameObject> m_peerPeds;
 
-	GameObject CreatePed(string name, Vector3 pos, Vector3 rot)
-	{
-        //fixme: to be done
-        return null;
-	}
 	// Use this for initialization
 	public void LoadLocalAvatar()
 	{
@@ -134,7 +129,7 @@ public class ScenarioControl : MonoBehaviour
 					}
 				}
 				if (!(localIps.Count > 0))
-				    throw new Exception("No network adapters with an IPv4 address in the system!");
+					throw new Exception("No network adapters with an IPv4 address in the system!");
 			}
 			XmlNodeList children = root.ChildNodes;
 			for (int i_node = 0; i_node < children.Count; i_node++)
@@ -181,10 +176,13 @@ public class ScenarioControl : MonoBehaviour
 										, p.ToString()
 										, r.ToString());
 								}
+								Quaternion q = Quaternion.Euler(r);
+								GameObject ped = Instantiate(m_pedPrefab, p, q);
+								ped.name = name_ped_attr.Value;
 								if (ownPed)
-									m_ownPed = CreatePed(name_ped_attr.Value, p, r);
+									m_ownPed = ped;
 								else
-									m_peerPeds[ipPedCode] = CreatePed(name_ped_attr.Value, p, r);
+									m_peerPeds[ipPedCode] = ped;
 							}
 						}
 					}
@@ -199,7 +197,7 @@ public class ScenarioControl : MonoBehaviour
 		}
 		catch(ArgumentNullException e)
 		{
-            DebugLog.Error("IP is not defined for the pedestrian!");
+			DebugLog.Error("IP is not defined for the pedestrian!");
 		}
 		catch(FormatException e)
 		{
