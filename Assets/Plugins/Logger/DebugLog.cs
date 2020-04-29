@@ -14,6 +14,15 @@ public class DebugLog
 		g_dbgLogger.m_logger.Dump();
 	}
 
+	public static void Error(object message)
+	{
+		string strPrefix = "Error:\t";
+		string strInfo = message.ToString();
+		string item = strPrefix + strInfo + "\n";
+		g_dbgLogger.m_logger.LogOut(item);
+		g_dbgLogger.m_logger.Dump();
+	}
+
 	public static void Warning(object message)
 	{
 		string strPrefix = "Warning:\t";

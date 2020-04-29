@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
+using System.Net;
+using System.Net.Sockets;
+
 public class ScenarioControl : MonoBehaviour
 {
 	public enum LAYER { scene_static = 8, peer_dynamic, host_dynamic, ego_dynamic, marker_dynamic };
@@ -33,16 +36,6 @@ public class ScenarioControl : MonoBehaviour
 		private const float height0 = 1.77f;
 		private const float width0 = 1.40f;
 		private const float hand0 = 0.25f;
-
-		class Ped
-		{
-			public string ip;
-			public string name;
-			public Vector3 pos;
-			public Vector3 rot;
-		};
-
-		private ArrayList lstPeds = new ArrayList();
 
 		public ConfAvatar(float a_height, float a_width, float a_depth)
 		{
@@ -82,19 +75,7 @@ public class ScenarioControl : MonoBehaviour
 			mp.m_rightShoulder.localScale = new Vector3(1f, s_w, 1f);
 		}
 
-		public void addPedestrian(string name
-								, string ip
-								, Vector3 pos
-								, Vector3 rot)
-		{
-			Ped ped = new Ped();
-			ped.name = name;
-			ped.ip = ip;
-			ped.pos = pos;
-			ped.rot = rot;
-			lstPeds.Add(ped);
-		}
-
+		public static string s_mockIp = "mockIp";
 		public static string s_pedestrian = "pedestrian";
 		public static string s_ip = "ip";
 		public static string s_name = "name";
@@ -106,21 +87,23 @@ public class ScenarioControl : MonoBehaviour
 		public void DbgLog()
 		{
 
-			string log = string.Format("\nheight:{0}\nwidth:{1}\ndepth:{2}"
+			string log = string.Format("height:{0}\twidth:{1}\tdepth:{2}"
 							, height, width, depth);
-			foreach (object obj in lstPeds)
-			{
-				Ped ped = (Ped)obj;
-				log += string.Format("\n\tIP:{0}\n\tname:{1}\n\tpos:{2}\n\trot:{3}"
-							, ped.ip, ped.name, ped.pos.ToString(), ped.rot.ToString());
-			}
 			DebugLog.Warning(log);
-
 		}
 	};
 
 	public ConfAvatar m_confAvatar;
 	bool m_debug = true;
+	bool m_mockIp = true;
+	GameObject m_ownPed;
+	Dictionary<int, GameObject> m_peerPeds;
+
+	GameObject CreatePed(string name, Vector3 pos, Vector3 rot)
+	{
+        //fixme: to be done
+        return null;
+	}
 	// Use this for initialization
 	public void LoadLocalAvatar()
 	{
@@ -132,7 +115,26 @@ public class ScenarioControl : MonoBehaviour
 			XmlDocument scene = new XmlDocument();
 			scene.Load("SceneDistri.xml");
 			XmlNode root = scene.DocumentElement;
-
+			HashSet<int> localIps = new HashSet<int>();
+			if (m_mockIp)
+			{
+				XmlElement e_mIp = (XmlElement)root;
+				XmlAttribute mip_attr = e_mIp.GetAttributeNode(ConfAvatar.s_mockIp);
+				IPAddress ip = IPAddress.Parse(mip_attr.Value);
+				localIps.Add(ip.GetHashCode());
+			}
+			else
+			{
+				var host = Dns.GetHostEntry(Dns.GetHostName());
+				foreach (var ip in host.AddressList)
+				{
+					if (ip.AddressFamily == AddressFamily.InterNetwork)
+					{
+						localIps.Add(ip.GetHashCode());
+					}
+				}
+				throw new Exception("No network adapters with an IPv4 address in the system!");
+			}
 			XmlNodeList children = root.ChildNodes;
 			for (int i_node = 0; i_node < children.Count; i_node++)
 			{
@@ -168,9 +170,20 @@ public class ScenarioControl : MonoBehaviour
 								}
 								Vector3 p = new Vector3(val[0], val[1], val[2]);
 								Vector3 r = new Vector3(val[3], val[4], val[5]);
-								m_confAvatar.addPedestrian(name_ped_attr.Value
-															, ip_ped_attr.Value
-															, p, r);
+								int ipPedCode = IPAddress.Parse(ip_ped_attr.Value).GetHashCode();
+								bool ownPed = (localIps.Contains(ipPedCode));
+								if (m_debug)
+								{
+									DebugLog.Format("CreatePed({0}, {1}, {2}, {3})\n"
+										, ownPed.ToString()
+										, name_ped_attr.Value
+										, p.ToString()
+										, r.ToString());
+								}
+								if (ownPed)
+									m_ownPed = CreatePed(name_ped_attr.Value, p, r);
+								else
+									m_peerPeds[ipPedCode] = CreatePed(name_ped_attr.Value, p, r);
 							}
 						}
 					}
@@ -181,15 +194,27 @@ public class ScenarioControl : MonoBehaviour
 		}
 		catch (System.IO.FileNotFoundException)
 		{
-			Debug.LogError("scene load failed!");
+			DebugLog.Error("scene load failed!");
+		}
+		catch(ArgumentNullException e)
+		{
+            DebugLog.Error("IP is not defined for the pedestrian!");
+		}
+		catch(FormatException e)
+		{
+			string strError = "FormatException caught!!!";
+			strError += string.Format("Source : {0}", e.Source);
+			strError += string.Format("Message : {0}", e.Message);
+			DebugLog.Error(strError);
 		}
 		catch (Exception e)
 		{
-			Debug.LogError("scene load failed!");
-			Debug.LogError(e.Message);
+			DebugLog.Error("scene load failed!");
+			DebugLog.Error(e.Message);
 		}
 		if (m_debug)
 			m_confAvatar.DbgLog();
+
 	}
 
 
