@@ -1133,7 +1133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4451755947957008}
   - component: {fileID: 95771683824129682}
-  - component: {fileID: 114758663419175008}
+  - component: {fileID: 114953471434219896}
   m_Layer: 0
   m_Name: MakeHumanModel_TPos
   m_TagString: Untagged
@@ -5090,7 +5090,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114758663419175008
+--- !u!114 &114953471434219896
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -5098,27 +5098,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1425134890698408}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a17bd4e015715e54f95430677f0d0c5d, type: 3}
+  m_Script: {fileID: 11500000, guid: ee3b82a1d84525e42900b0b224a38a93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logging: 0
-  m_oriJs:
-  - MakeHuman default skeleton
-  - root
-  - spine01
-  - upperleg01.L
-  - upperleg01.R
-  - head
-  - upperarm01.L
-  - upperarm01.R
-  - lowerleg01.L
-  - lowerleg01.R
-  - lowerarm01.L
-  - lowerarm01.R
-  - foot.L
-  - foot.R
-  - wrist.L
-  - wrist.R
 --- !u!137 &137040903341617534
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
