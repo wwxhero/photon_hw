@@ -58,7 +58,7 @@ namespace Bolt.Samples.GettingStarted
 
 			Transform root_t = scenario_ctrl.m_ownPed.transform;
 			Stack<Pair<Transform, BoltEntity>> bind_stk = new Stack<Pair<Transform, BoltEntity>>();
-			var root_tok = new LocalJointId(pedId, jointId++);
+			var root_tok = new LocalJointId(pedId, jointId);
 			BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint
                                                     , root_tok
 													, root_t.position
@@ -73,7 +73,7 @@ namespace Bolt.Samples.GettingStarted
 							if (names.Contains(this_t.name))
 							{
 								BoltEntity e_p = bind_stk.Peek().Second;
-								var e_tok = new LocalJointId(pedId, jointId++);
+								var e_tok = new LocalJointId(pedId, jointId);
 								BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint
 													, e_tok
 													, this_t.position
@@ -82,6 +82,7 @@ namespace Bolt.Samples.GettingStarted
 								e_c.SetParent(e_p);
 								bind_stk.Push(new Pair<Transform, BoltEntity>(this_t, e_c));
 							}
+							jointId ++;
 						}
 					, (Transform this_t) =>
 						{

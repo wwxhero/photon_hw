@@ -95,17 +95,18 @@ public class ScenarioControl : MonoBehaviour
 	public ConfAvatar m_confAvatar;
 	public GameObject m_pedPrefab;
 	bool m_debug = true;
-	bool m_mockIp = false;
+	bool m_mockIp = true;
 	[HideInInspector] public GameObject m_ownPed;
 	[HideInInspector] public int m_ownPedId;
 	[HideInInspector] public Dictionary<int, GameObject> m_Peds = new Dictionary<int, GameObject>();
 	[HideInInspector] public string[] m_lstNetworkingJoints = {
-									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
-									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
-									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
-									"lowerleg01.R",		"foot.L",			"clavicle.L",		"toe2-1.L",
-									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
-									"toe2-1.R"
+									//"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
+									//"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
+									//"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
+									//"lowerleg01.R",		"foot.L",			"clavicle.L",		"toe2-1.L",
+									//"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
+									//"toe2-1.R"
+
 								};
 	// Use this for initialization
 	public void LoadLocalAvatar()
