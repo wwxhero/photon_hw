@@ -5,6 +5,7 @@ using UnityEngine;
 public class JointsPool : MonoBehaviour
 {
 	const bool m_debug = true;
+	[HideInInspector] public List<Transform> m_joints = new List<Transform>();
 	class Node_d
 	{
 		Transform m_this;
@@ -79,15 +80,15 @@ public class JointsPool : MonoBehaviour
 		}
 	}
 
+
 	// Use this for initialization
-	void Start()
+	void Awake()
 	{
-
+        Traverse_d(transform
+                , (Transform this_t) => { m_joints.Add(this_t); }
+                , (Transform this_t) => { }
+                );
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
 
-	}
 }

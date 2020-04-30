@@ -43,16 +43,24 @@ namespace Bolt.Samples.GettingStarted
 			LogTreeTransformRecur(root.transform);
 		}
 
+		public override void BoltStartBegin() {
+		    BoltNetwork.RegisterTokenClass<LocalJointId>();
+		}
+
 		public override void SceneLoadLocalDone(string a_scene)
 		{
 			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
 			Debug.Assert(null != scenario_obj);
 			ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
 			scenario_ctrl.LoadLocalAvatar();
+            int pedId = scenario_ctrl.m_ownPedId;
+			int jointId = 0;
 
 			Transform root_t = scenario_ctrl.m_ownPed.transform;
 			Stack<Pair<Transform, BoltEntity>> bind_stk = new Stack<Pair<Transform, BoltEntity>>();
+			var root_tok = new LocalJointId(pedId, jointId++);
 			BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint
+                                                    , root_tok
 													, root_t.position
 													, root_t.rotation);
 			root_e.transform.name = root_t.name;
@@ -65,7 +73,9 @@ namespace Bolt.Samples.GettingStarted
 							if (names.Contains(this_t.name))
 							{
 								BoltEntity e_p = bind_stk.Peek().Second;
+								var e_tok = new LocalJointId(pedId, jointId++);
 								BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint
+													, e_tok
 													, this_t.position
 													, this_t.rotation);
 								e_c.transform.name = this_t.name;
