@@ -44,6 +44,7 @@ namespace Bolt.Samples.GettingStarted
 		{
 			_showGui = false;
 			BoltNetwork.RegisterTokenClass<PhotonRoomProperties>();
+			BoltNetwork.RegisterTokenClass<LocalJointId>();
 		}
 
 		public override void BoltStartDone()

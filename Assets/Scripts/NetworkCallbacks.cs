@@ -5,26 +5,98 @@ using UnityEngine;
 namespace Bolt.Samples.GettingStarted
 {
 	[BoltGlobalBehaviour("Tutorial1")]
+
 	public class NetworkCallbacks : Bolt.GlobalEventListener
 	{
 		List<string> logMessages = new List<string>();
-
-		public override void SceneLoadLocalDone(string scene)
+		const bool m_debug = true;
+		public class Pair<T, U>
 		{
-			// randomize a position
-			var spawnPosition = new Vector3(Random.Range(-8, 8), 1, Random.Range(-8, 8));
+			public Pair()
+			{
+			}
 
-			// instantiate cube
-			BoltEntity entity_0 = BoltNetwork.Instantiate(BoltPrefabs.Joint, spawnPosition, Quaternion.identity);
-			spawnPosition.x += 1f;
-			BoltEntity entity_1 = BoltNetwork.Instantiate(BoltPrefabs.Joint, spawnPosition, Quaternion.identity);
-			spawnPosition.x += 1f;
-			BoltEntity entity_2 = BoltNetwork.Instantiate(BoltPrefabs.Joint, spawnPosition, Quaternion.identity);
+			public Pair(T first, U second)
+			{
+				this.First = first;
+				this.Second = second;
+			}
 
-            entity_1.SetParent(entity_0);
-            entity_2.SetParent(entity_1);
+			public T First { get; set; }
+			public U Second { get; set; }
+		};
 
-            entity_0.gameObject.AddComponent<LoggerAvatar>();
+		void LogTreeTransformRecur(Transform p, int indent = 0)
+		{
+			string item = "";
+			for (int i = 0; i < indent; i++)
+				item += "\t";
+			item += p.name;
+			DebugLog.Warning(item);
+			int indent_prime = indent + 1;
+			foreach (Transform c in p)
+				LogTreeTransformRecur(c, indent_prime);
+		}
+
+		void LogTreeNode2(BoltEntity root, int indent = 0)
+		{
+			LogTreeTransformRecur(root.transform);
+		}
+
+		public override void SceneLoadLocalDone(string a_scene)
+		{
+			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
+			Debug.Assert(null != scenario_obj);
+			ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
+			scenario_ctrl.LoadLocalAvatar();
+            int pedId = scenario_ctrl.m_ownPedId;
+			int jointId = 0;
+
+			Transform root_t = scenario_ctrl.m_ownPed.transform;
+			Stack<Pair<Transform, BoltEntity>> bind_stk = new Stack<Pair<Transform, BoltEntity>>();
+            var root_tok = new LocalJointId
+            {
+                pedId = pedId,
+                jointId = jointId
+            };
+            BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint
+                                                    , root_tok
+													, root_t.position
+													, root_t.rotation);
+			root_e.transform.name = root_t.name;
+			bind_stk.Push(new Pair<Transform, BoltEntity>(root_t, root_e));
+			HashSet<string> names = new HashSet<string>(ScenarioControl.m_lstNetworkingJoints);
+
+			JointsPool.Traverse_d(root_t
+					, (Transform this_t) =>
+						{
+							if (names.Contains(this_t.name))
+							{
+								BoltEntity e_p = bind_stk.Peek().Second;
+                                var e_tok = new LocalJointId
+                                {
+                                    pedId = pedId,
+                                    jointId = jointId
+                                };
+                                BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint
+													, e_tok
+													, this_t.position
+													, this_t.rotation);
+								e_c.transform.name = this_t.name;
+								e_c.SetParent(e_p);
+								bind_stk.Push(new Pair<Transform, BoltEntity>(this_t, e_c));
+							}
+							jointId ++;
+						}
+					, (Transform this_t) =>
+						{
+							if (bind_stk.Peek().First == this_t)
+								bind_stk.Pop();
+						}
+					);
+			if (m_debug)
+				LogTreeNode2(root_e);
+
 		}
 
 		public override void OnEvent(LogEvent evnt)
@@ -46,5 +118,7 @@ namespace Bolt.Samples.GettingStarted
 
 			GUILayout.EndArea();
 		}
+
+
 	}
 }
