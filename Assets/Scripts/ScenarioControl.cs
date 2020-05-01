@@ -239,4 +239,13 @@ public class ScenarioControl : MonoBehaviour
 				bfs.Enqueue(t_c);
 		}
 	}
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Animator player = m_ownPed.GetComponent<Animator>();
+            player.enabled = !(player.enabled);
+        }
+    }
 }
