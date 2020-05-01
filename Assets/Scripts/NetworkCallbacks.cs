@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Bolt.Samples.GettingStarted
 {
 	[BoltGlobalBehaviour("Tutorial1")]
-	//FHWA ScenarioControl Corresponding class
+
 	public class NetworkCallbacks : Bolt.GlobalEventListener
 	{
 		List<string> logMessages = new List<string>();
@@ -43,10 +43,6 @@ namespace Bolt.Samples.GettingStarted
 			LogTreeTransformRecur(root.transform);
 		}
 
-		public override void BoltStartBegin() {
-		    BoltNetwork.RegisterTokenClass<LocalJointId>();
-		}
-
 		public override void SceneLoadLocalDone(string a_scene)
 		{
 			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
@@ -58,14 +54,18 @@ namespace Bolt.Samples.GettingStarted
 
 			Transform root_t = scenario_ctrl.m_ownPed.transform;
 			Stack<Pair<Transform, BoltEntity>> bind_stk = new Stack<Pair<Transform, BoltEntity>>();
-			var root_tok = new LocalJointId(pedId, jointId);
-			BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint
+            var root_tok = new LocalJointId
+            {
+                pedId = pedId,
+                jointId = jointId
+            };
+            BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint
                                                     , root_tok
 													, root_t.position
 													, root_t.rotation);
 			root_e.transform.name = root_t.name;
 			bind_stk.Push(new Pair<Transform, BoltEntity>(root_t, root_e));
-			HashSet<string> names = new HashSet<string>(scenario_ctrl.m_lstNetworkingJoints);
+			HashSet<string> names = new HashSet<string>(ScenarioControl.m_lstNetworkingJoints);
 
 			JointsPool.Traverse_d(root_t
 					, (Transform this_t) =>
@@ -73,8 +73,12 @@ namespace Bolt.Samples.GettingStarted
 							if (names.Contains(this_t.name))
 							{
 								BoltEntity e_p = bind_stk.Peek().Second;
-								var e_tok = new LocalJointId(pedId, jointId);
-								BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint
+                                var e_tok = new LocalJointId
+                                {
+                                    pedId = pedId,
+                                    jointId = jointId
+                                };
+                                BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint
 													, e_tok
 													, this_t.position
 													, this_t.rotation);
