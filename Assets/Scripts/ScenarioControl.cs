@@ -105,7 +105,7 @@ public class ScenarioControl : MonoBehaviour
 									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
 									"lowerleg01.R",		"foot.L",			"clavicle.L",		"toe2-1.L",
 									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
-									"toe2-1.R"
+									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
 								};
 	// Use this for initialization
 	public void LoadLocalAvatar()
