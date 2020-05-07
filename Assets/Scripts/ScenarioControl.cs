@@ -110,9 +110,6 @@ public class ScenarioControl : MonoBehaviour
 	// Use this for initialization
 	public void LoadLocalAvatar()
 	{
-		GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
-		Debug.Assert(null != scenario_obj);
-		ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
 		try
 		{
 			XmlDocument scene = new XmlDocument();
@@ -206,7 +203,7 @@ public class ScenarioControl : MonoBehaviour
 		{
 			DebugLog.Error("scene load failed!");
 		}
-		catch(ArgumentNullException e)
+		catch(ArgumentNullException)
 		{
 			DebugLog.Error("IP is not defined for the pedestrian!");
 		}
