@@ -7,7 +7,8 @@ public class LoggerAvatar : MonoBehaviour {
 	loggerSrvLib.Logger m_logger;
 	List<Transform> m_lstTrans = new List<Transform>();
 	readonly string [] c_fields = {"r_w", "r_x", "r_y", "r_z"
-								, "t_x", "t_y", "t_z"};
+								, "t_x", "t_y", "t_z"
+                                , "time"};
 	public void Initialize(string[] joints)
 	{
 		HashSet<string> names = new HashSet<string>(joints);
@@ -33,7 +34,7 @@ public class LoggerAvatar : MonoBehaviour {
 				}
 			, (Transform this_t) => { }
 			);
-		strHeader += "\n";
+        strHeader += string.Format(", {0}\n", c_fields[7]);
 		LogOutInPack(strHeader);
 	}
 
@@ -52,7 +53,7 @@ public class LoggerAvatar : MonoBehaviour {
 										, q.w, q.x, q.y, q.z
 										, t.x, t.y, t.z);
 		}
-		strItem += "\n";
+        strItem += string.Format(", {0}\n", System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond);
 		LogOutInPack(strItem);
 	}
 
