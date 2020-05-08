@@ -40,6 +40,9 @@ public class LoggerAvatar : MonoBehaviour {
 
 	void Update()
 	{
+		bool initialized = (null != m_logger);
+		if (!initialized)
+			return;
 		Quaternion q = m_lstTrans[0].localRotation;
 		Vector3 t = m_lstTrans[0].localPosition;
 		string strItem = string.Format("{0,7:#.0000}, {1,7:#.0000}, {2,7:#.0000}, {3,7:#.0000}, {4,7:#.000}, {5,7:#.000}, {6,7:#.000}"
@@ -59,7 +62,8 @@ public class LoggerAvatar : MonoBehaviour {
 
 	void OnDestroy()
 	{
-		m_logger.Close();
+		if (null != m_logger)
+			m_logger.Close();
 		m_logger = null;
 	}
 
