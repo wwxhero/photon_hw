@@ -68,7 +68,7 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour {
 					foreach (GameObject go in gos)
 					{
 						LoggerAvatar logger = go.GetComponent<LoggerAvatar>();
-						logger.Initialize(names_arr);
+						logger.Initialize(names_arr, false);
 					}
 					m_state ++;
 				}

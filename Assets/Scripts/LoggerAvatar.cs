@@ -6,11 +6,13 @@ public class LoggerAvatar : MonoBehaviour {
 	int c_logPackCap = 512;
 	loggerSrvLib.Logger m_logger;
 	List<Transform> m_lstTrans = new List<Transform>();
+	bool m_local;
 	readonly string [] c_fields = {"r_w", "r_x", "r_y", "r_z"
 								, "t_x", "t_y", "t_z"
-                                , "time"};
-	public void Initialize(string[] joints)
+								, "time"};
+	public void Initialize(string[] joints, bool local)
 	{
+		m_local = local;
 		HashSet<string> names = new HashSet<string>(joints);
 		m_logger = new loggerSrvLib.Logger();
 		string name = string.Format("{0}.csv", transform.name);
@@ -34,7 +36,7 @@ public class LoggerAvatar : MonoBehaviour {
 				}
 			, (Transform this_t) => { }
 			);
-        strHeader += string.Format(", {0}\n", c_fields[7]);
+		strHeader += string.Format(", {0}\n", c_fields[7]);
 		LogOutInPack(strHeader);
 	}
 
@@ -43,20 +45,38 @@ public class LoggerAvatar : MonoBehaviour {
 		bool initialized = (null != m_logger);
 		if (!initialized)
 			return;
-		Quaternion q = m_lstTrans[0].localRotation;
-		Vector3 t = m_lstTrans[0].localPosition;
+		Quaternion q;
+		Vector3 t;
+		if (m_local)
+		{
+			q = m_lstTrans[0].localRotation;
+			t = m_lstTrans[0].localPosition;
+		}
+		else
+		{
+			q = m_lstTrans[0].rotation;
+			t = m_lstTrans[0].position;
+		}
 		string strItem = string.Format("{0,7:#.0000}, {1,7:#.0000}, {2,7:#.0000}, {3,7:#.0000}, {4,7:#.000}, {5,7:#.000}, {6,7:#.000}"
 										, q.w, q.x, q.y, q.z
 										, t.x, t.y, t.z);
 		for (int i = 1; i < m_lstTrans.Count; i ++)
 		{
-			q = m_lstTrans[i].localRotation;
-			t = m_lstTrans[i].localPosition;
+			if (m_local)
+			{
+				q = m_lstTrans[i].localRotation;
+				t = m_lstTrans[i].localPosition;
+			}
+			else
+			{
+				q = m_lstTrans[i].rotation;
+				t = m_lstTrans[i].position;
+			}
 			strItem += string.Format(", {0,7:#.0000}, {1,7:#.0000}, {2,7:#.0000}, {3,7:#.0000}, {4,7:#.000}, {5,7:#.000}, {6,7:#.000}"
 										, q.w, q.x, q.y, q.z
 										, t.x, t.y, t.z);
 		}
-        strItem += string.Format(", {0}\n", System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond);
+		strItem += string.Format(", {0}\n", System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond);
 		LogOutInPack(strItem);
 	}
 
