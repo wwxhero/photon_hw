@@ -55,14 +55,15 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour {
 							names[j.name] = null;
 						}
 					}
-					DebugLog.Warning("}");
 					string [] names_arr = new string[names.Count];
 					int n_name = 0;
 
 					foreach (var name in names)
 					{
 						names_arr[n_name ++] = name.Key;
+						DebugLog.Format("\tU:\t{0}", name.Key);
 					}
+					DebugLog.Warning("}");
 
 
 					foreach (GameObject go in gos)
