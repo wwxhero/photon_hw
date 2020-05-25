@@ -8,6 +8,11 @@ using System.Net.Sockets;
 
 public class ScenarioControl : MonoBehaviour
 {
+	public GameObject m_pedPrefab;
+	public GameObject m_camInspectorPrefab;
+	public GameObject m_mockTrackersPrefab;
+	GameObject m_trackers;
+	Camera m_egoInspector;
 	public enum LAYER { scene_static = 8, peer_dynamic, host_dynamic, ego_dynamic, marker_dynamic };
 	public class ConfAvatar
 	{
@@ -92,8 +97,165 @@ public class ScenarioControl : MonoBehaviour
 			DebugLog.Warning(log);
 		}
 	};
-	public ConfAvatar m_confAvatar;
-	public GameObject m_pedPrefab;
+	public class ConfVehical
+	{
+		public float Width = 2.06f;
+		public float Height = 1.55f;
+		public float Depth = 5.15f;
+	};
+	public class ConfMap
+	{
+		Vector3 center;
+		float width, height, depth;
+		public ConfMap(Transform t)
+		{
+			Transform bcube = t.Find("Bcube");
+			Debug.Assert(null != bcube);
+			if (null == bcube)
+				throw new Exception("no bounding cube defined for map!");
+			center = bcube.localPosition;
+			Vector3 size = bcube.lossyScale;
+			width = size.x;
+			height = size.y;
+			depth = size.z;
+		}
+		public float Height
+		{
+			get { return height; }
+		}
+		public float Width
+		{
+			get { return width; }
+		}
+		public float Depth
+		{
+			get { return depth; }
+		}
+		public Vector3 Center
+		{
+			get { return center; }
+		}
+	};
+	public class InspectorHelper
+	{
+		struct BBOX
+		{
+			public Vector3 center;
+			public float halfWidth, halfHeight, halfDepth;
+		};
+		BBOX m_bbox;
+		public enum ObjType { Host, Ego, Map };
+		ObjType m_type;
+		Transform m_target;
+		public InspectorHelper(Transform target, ConfAvatar conf)
+		{
+			m_type = ObjType.Ego;
+			m_target = target;
+			Vector3 s_l = target.localScale;
+			m_bbox.center = new Vector3(0, (conf.Height * 0.5f) / s_l.y, 0);
+			m_bbox.halfWidth = conf.Width * 0.5f;
+			m_bbox.halfHeight = conf.Height * 0.5f;
+			m_bbox.halfDepth = conf.Depth * 0.5f;
+		}
+
+		public InspectorHelper(Transform target, ConfVehical conf)
+		{
+			m_type = ObjType.Host;
+			m_target = target;
+			m_bbox.center = new Vector3(0, 0, conf.Height * 0.5f);
+			m_bbox.halfWidth = conf.Width * 0.5f;
+			m_bbox.halfHeight = conf.Height * 0.5f;
+			m_bbox.halfDepth = conf.Depth * 0.5f;
+		}
+
+		public InspectorHelper(Transform target, ConfMap conf)
+		{
+			m_type = ObjType.Map;
+			m_target = target;
+			m_bbox.center = conf.Center;
+			m_bbox.halfWidth = conf.Width * 0.5f;
+			m_bbox.halfHeight = conf.Height * 0.5f;
+			m_bbox.halfDepth = conf.Depth * 0.5f;
+		}
+		public enum Direction { front = 0, up, right, back, down, left };
+
+		public void Apply(Camera cam, Direction dir)
+		{
+			//fixme: put camera in the specific direction of the target
+			float[] camSize = {
+				  Mathf.Max(m_bbox.halfWidth, m_bbox.halfHeight)
+				, Mathf.Max(m_bbox.halfWidth, m_bbox.halfDepth)
+				, Mathf.Max(m_bbox.halfHeight, m_bbox.halfDepth)
+				, Mathf.Max(m_bbox.halfWidth, m_bbox.halfHeight)
+				, Mathf.Max(m_bbox.halfWidth, m_bbox.halfDepth)
+				, Mathf.Max(m_bbox.halfHeight, m_bbox.halfDepth)
+			};
+			int host_mask = 1 << (int)LAYER.host_dynamic;
+			int ego_mask = 1 << (int)LAYER.ego_dynamic;
+			int static_mask = 1 << (int)LAYER.scene_static;
+			int dyn_mask = 1 << (int)LAYER.peer_dynamic;
+			int dyn_marker_mask = 1 << (int)LAYER.marker_dynamic;
+
+			if (ObjType.Host == m_type)
+				cam.cullingMask = host_mask | ego_mask;
+			else if (ObjType.Ego == m_type)
+				cam.cullingMask = ego_mask;
+			else // ObjType.Map == m_type
+				cam.cullingMask = static_mask | dyn_marker_mask;
+
+			cam.orthographic = true;
+			cam.orthographicSize = camSize[(int)dir];
+
+			cam.transform.parent = m_target;
+			float c_distance = 100f;
+			Vector3[] t_l = null;
+			Vector3 u_l;
+			if (ObjType.Host == m_type)
+			{
+				t_l = new Vector3[] {
+						  new Vector3(0, -1, 0)
+						, new Vector3(0,  0, 1)
+						, new Vector3(1, 0, 0)
+						, new Vector3(0, 1, 0)
+						, new Vector3(0,  0, -1)
+						, new Vector3(-1, 0, 0)
+					};
+				u_l = new Vector3(0, 0, 1);
+			}
+			else if (ObjType.Ego == m_type)
+			{
+				t_l = new Vector3[] {
+						  new Vector3(0, 0, 1)
+						, new Vector3(0, 1, 0)
+						, new Vector3(1, 0, 0)
+						, new Vector3(0, 0, -1)
+						, new Vector3(0, -1, 0)
+						, new Vector3(-1, 0, 0)
+					};
+				u_l = new Vector3(0, 1, 0);
+			}
+			else //if (ObjType.Map == m_type)
+			{
+				t_l = new Vector3[] {
+						  new Vector3(0, 1, 0)
+						, new Vector3(0, 1, 0)
+						, new Vector3(0, 1, 0)
+						, new Vector3(0, 1, 0)
+						, new Vector3(0, 1, 0)
+						, new Vector3(0, 1, 0)
+					};
+				u_l = new Vector3(0, 0, -1);
+			}
+
+			Quaternion r_l = Quaternion.LookRotation(-t_l[(int)dir], u_l);
+			Vector3 p_l = t_l[(int)dir] * c_distance + m_bbox.center;
+			cam.transform.localPosition = p_l;
+			cam.transform.localRotation = r_l;
+		}
+	};
+	[HideInInspector] public ConfAvatar m_confAvatar;
+	ConfVehical m_confVehicle = new ConfVehical(); //fixme: driving vehicle size is hardcoded
+	ConfMap m_confMap;
 	bool m_debug = true;
 	bool m_mockIp = true;
 	[HideInInspector] public GameObject m_ownPed;
@@ -183,12 +345,50 @@ public class ScenarioControl : MonoBehaviour
 								}
 								Quaternion q = Quaternion.Euler(r);
 								GameObject ped = Instantiate(m_pedPrefab, p, q);
-                                ped.name = name_ped_attr.Value;
-                                ped.GetComponent<LoggerAvatar>().Initialize(m_lstNetworkingJoints, true);
+								ped.name = name_ped_attr.Value;
+								ped.GetComponent<LoggerAvatar>().Initialize(m_lstNetworkingJoints, true);
 								if (ownPed)
 								{
 									m_ownPed = ped;
 									m_ownPedId = idPed;
+
+									RootMotion.FinalIK.VRIK ik = ped.AddComponent<RootMotion.FinalIK.VRIK>();
+									ped.AddComponent<RootMotion.FinalIK.VRIKBackup>();
+									ik.AutoDetectReferences();
+
+									bool mockTracking = (null != m_mockTrackersPrefab);
+									GameObject steamVR = GameObject.Find("[CameraRig]");
+									Debug.Assert(null != steamVR);
+									SteamVR_Manager mgr = steamVR.GetComponent<SteamVR_Manager>();
+									mgr.Avatar = ped;
+									mgr.DEF_MOCKSTEAM = mockTracking;
+									if (mockTracking)
+									{
+										m_trackers = Instantiate(m_mockTrackersPrefab, p, q);
+										RootMotion.Demos.VRIKCalibrationController caliCtrl = ped.AddComponent<RootMotion.Demos.VRIKCalibrationController>();
+										caliCtrl.ik = ik;
+										MockPhysics trackers_mp = m_trackers.GetComponent<MockPhysics>();
+										Debug.Assert((int)MockPhysics.Mount.total == trackers_mp.m_trackersMt.Length);
+										caliCtrl.headTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.head];
+										caliCtrl.bodyTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.body];
+										caliCtrl.leftHandTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.lh];
+										caliCtrl.rightHandTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.rh];
+										caliCtrl.leftFootTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.lf];
+										caliCtrl.rightFootTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.rf];
+										m_confAvatar.Apply(m_trackers, ik);
+									}
+									else
+									{
+										m_trackers = steamVR;
+										Debug.Assert(null != m_confAvatar);
+										m_confAvatar.Apply(ik);
+									}
+									setLayer(ped, LAYER.ego_dynamic);
+									setLayer(m_trackers, LAYER.ego_dynamic);
+									//no matter driver or pedestrain, by default, inspector is on avatar
+									InspectorHelper inspector = new InspectorHelper(ped.transform, m_confAvatar);
+									m_egoInspector = Instantiate(m_camInspectorPrefab).GetComponent<Camera>();
+									inspector.Apply(m_egoInspector, InspectorHelper.Direction.front);
 								}
 								m_Peds[idPed] = ped;
 							}
@@ -198,6 +398,7 @@ public class ScenarioControl : MonoBehaviour
 				//m_confMap = new ConfMap(transform);
 			}
 			setLayer(gameObject, LAYER.scene_static);
+			m_confMap = new ConfMap(transform);
 		}
 		catch (System.IO.FileNotFoundException)
 		{
@@ -238,12 +439,42 @@ public class ScenarioControl : MonoBehaviour
 		}
 	}
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Animator player = m_ownPed.GetComponent<Animator>();
-            player.enabled = !(player.enabled);
-        }
-    }
+
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+			Animator player = m_ownPed.GetComponent<Animator>();
+			player.enabled = !(player.enabled);
+		}
+	}
+
+	public void adjustInspector(InspectorHelper.Direction dir, InspectorHelper.ObjType type)
+	{
+		InspectorHelper inspector = null;
+		if (type == InspectorHelper.ObjType.Host)
+			inspector = new InspectorHelper(m_ownPed.transform.parent, m_confVehicle);
+		else if (type == InspectorHelper.ObjType.Ego)
+			inspector = new InspectorHelper(m_ownPed.transform, m_confAvatar);
+		else if (type == InspectorHelper.ObjType.Map)
+			inspector = new InspectorHelper(transform, m_confMap);
+		inspector.Apply(m_egoInspector, dir);
+	}
+
+	public void viewInspec()
+	{
+		m_egoInspector.gameObject.SetActive(true);
+		adjustInspector(ScenarioControl.InspectorHelper.Direction.front, InspectorHelper.ObjType.Ego);
+	}
+
+	public void viewHmd()
+	{
+		m_egoInspector.gameObject.SetActive(false);
+	}
+
+	public void viewMap()
+	{
+		m_egoInspector.gameObject.SetActive(true);
+		adjustInspector(ScenarioControl.InspectorHelper.Direction.up, InspectorHelper.ObjType.Map);
+	}
 }
