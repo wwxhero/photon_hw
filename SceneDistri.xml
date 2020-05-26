@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuer mockIp="192.168.0.17">
+	<avatar height="1.78" width="1.45" depth="0.4">
+		<!-- this is for testing only, hit number key to activate the corresponding teleport -->
+		<pedestrian ip="192.168.0.17" name="Wanxin">
+			<x>-44537.54</x>
+			<y>0</y>
+			<z>-1531.74</z>
+			<i>0</i>
+			<j>-90</j>
+			<k>0</k>
+		</pedestrian>
+		<pedestrian ip="192.168.0.16" name="Lakshimi">
+			<x>-44562.48</x>
+			<y>0</y>
+			<z>-1531.51</z>
+			<i>0</i>
+			<j>90</j>
+			<k>0</k>
+		</pedestrian>
+	</avatar>
+</configuer>
