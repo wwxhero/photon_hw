@@ -3989,7 +3989,7 @@ MonoBehaviour:
     IKPosition: {x: 0, y: 0, z: 0}
     IKPositionWeight: 1
     root: {fileID: 0}
-    plantFeet: 1
+    plantFeet: 0
     spine:
       bones: []
       headTarget: {fileID: 0}

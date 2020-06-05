@@ -442,9 +442,10 @@ public class ScenarioControl : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.Space)
+			&& null != m_mockTrackersPrefab)
 		{
-			Animator player = m_ownPed.GetComponent<Animator>();
+			Animator player = m_trackers.GetComponent<Animator>();
 			player.enabled = !(player.enabled);
 		}
 	}
