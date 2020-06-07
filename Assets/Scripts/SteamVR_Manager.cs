@@ -742,10 +742,7 @@ public class SteamVR_Manager : SteamVR_TDManager
 		ScenarioControl.ConfAvatar conf = ctrl.m_confAvatar;
 		g_inst.m_refCanvasMgr.UpdateData(conf, true);
 		RootMotion.FinalIK.VRIK ik = g_inst.m_avatar.GetComponent<RootMotion.FinalIK.VRIK>();
-		if (g_inst.DEF_MOCKSTEAM)
-			conf.Apply(ctrl.m_trackers, ik);
-		else
-			conf.Apply(ik);
+		conf.Apply(ik);
 		return true;
 	}
 

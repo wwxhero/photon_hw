@@ -12,7 +12,7 @@ public class ScenarioControl : MonoBehaviour
 	public GameObject m_pedPrefab;
 	public GameObject m_camInspectorPrefab;
 	public GameObject m_mockTrackersPrefab;
-	[HideInInspector] public GameObject m_trackers;
+	GameObject m_trackers;
 	Camera m_egoInspector;
 	public enum LAYER { scene_static = 8, peer_dynamic, host_dynamic, ego_dynamic, marker_dynamic };
 	public class ConfAvatar
