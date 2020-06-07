@@ -738,10 +738,14 @@ public class SteamVR_Manager : SteamVR_TDManager
 	{
 		if (g_inst.DEF_MOCKSTEAM)
 			Debug.LogWarning("SteamVR_Manager::actPersonpanelUpdateT");
-		ScenarioControl.ConfAvatar conf = g_inst.m_senarioCtrl.GetComponent<ScenarioControl>().m_confAvatar;
+		ScenarioControl ctrl = g_inst.m_senarioCtrl.GetComponent<ScenarioControl>();
+		ScenarioControl.ConfAvatar conf = ctrl.m_confAvatar;
 		g_inst.m_refCanvasMgr.UpdateData(conf, true);
 		RootMotion.FinalIK.VRIK ik = g_inst.m_avatar.GetComponent<RootMotion.FinalIK.VRIK>();
-		conf.Apply(ik);
+		if (g_inst.DEF_MOCKSTEAM)
+			conf.Apply(ctrl.m_trackers, ik);
+		else
+			conf.Apply(ik);
 		return true;
 	}
 

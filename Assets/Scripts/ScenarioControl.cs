@@ -5,13 +5,14 @@ using UnityEngine;
 using System.Xml;
 using System.Net;
 using System.Net.Sockets;
+using Bolt.Samples.GettingStarted;
 
 public class ScenarioControl : MonoBehaviour
 {
 	public GameObject m_pedPrefab;
 	public GameObject m_camInspectorPrefab;
 	public GameObject m_mockTrackersPrefab;
-	GameObject m_trackers;
+	[HideInInspector] public GameObject m_trackers;
 	Camera m_egoInspector;
 	public enum LAYER { scene_static = 8, peer_dynamic, host_dynamic, ego_dynamic, marker_dynamic };
 	public class ConfAvatar
@@ -58,17 +59,21 @@ public class ScenarioControl : MonoBehaviour
 			return s_h_inv;
 		}
 
-		public void Apply(RootMotion.FinalIK.VRIK ped)
+		public void Apply(RootMotion.FinalIK.VRIK ped, bool notifyNetwork = true)
 		{
 			float s_h = height / height0;
 			float s_w = width / (width0 * s_h);
 			ped.references.root.localScale = new Vector3(s_h, s_h, s_h);
 			ped.references.leftShoulder.localScale = new Vector3(1f, s_w, 1f);
 			ped.references.rightShoulder.localScale = new Vector3(1f, s_w, 1f);
+            if (notifyNetwork)
+			    NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
+													, ped.references.leftShoulder
+													, ped.references.rightShoulder});
 		}
 
-		public void Apply(GameObject mockPhysic, RootMotion.FinalIK.VRIK ped)
-		{
+		public void Apply(GameObject mockPhysic, RootMotion.FinalIK.VRIK ped, bool notifyNetwork = true)
+        {
 			float s_h = height / height0;
 			float s_w = width / (width0 * s_h);
 			MockPhysics mp = mockPhysic.GetComponent<MockPhysics>();
@@ -78,6 +83,10 @@ public class ScenarioControl : MonoBehaviour
 			mp.transform.localScale = new Vector3(s_h, s_h, s_h);
 			mp.m_leftShoulder.localScale = new Vector3(1f, s_w, 1f);
 			mp.m_rightShoulder.localScale = new Vector3(1f, s_w, 1f);
+            if (notifyNetwork)
+			    NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
+													, ped.references.leftShoulder
+													, ped.references.rightShoulder});
 		}
 
 		public static string s_mockIp = "mockIp";
@@ -375,13 +384,13 @@ public class ScenarioControl : MonoBehaviour
 										caliCtrl.rightHandTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.rh];
 										caliCtrl.leftFootTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.lf];
 										caliCtrl.rightFootTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.rf];
-										m_confAvatar.Apply(m_trackers, ik);
+										m_confAvatar.Apply(m_trackers, ik, false);
 									}
 									else
 									{
 										m_trackers = steamVR;
 										Debug.Assert(null != m_confAvatar);
-										m_confAvatar.Apply(ik);
+										m_confAvatar.Apply(ik, false);
 									}
 									setLayer(ped, LAYER.ego_dynamic);
 									setLayer(m_trackers, LAYER.ego_dynamic);
