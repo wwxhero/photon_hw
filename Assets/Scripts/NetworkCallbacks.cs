@@ -104,6 +104,17 @@ namespace Bolt.Samples.GettingStarted
 			logMessages.Insert(0, evnt.Message);
 		}
 
+		public override void OnEvent(JointScaleEvent evnt)
+		{
+			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
+			Debug.Assert(null != scenario_obj);
+			ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
+			GameObject ped = scenario_ctrl.m_Peds[evnt.pedId];
+			JointsPool joints = ped.GetComponent<JointsPool>();
+			Debug.Assert(joints.m_joints.Count > evnt.jointId);
+			joints.m_joints[evnt.jointId].localScale = evnt.scale;
+		}
+
 		void OnGUI()
 		{
 			// only display max the 5 latest log messages
@@ -136,12 +147,17 @@ namespace Bolt.Samples.GettingStarted
 						{
 							if (joints.Contains(this_t))
 							{
-                                //todo: replace with event
-                                Debug.LogWarningFormat("ScaleEvent on {0}: [{1} {2} {3}]"
-												, this_t.name
-												, this_t.localScale.x.ToString()
-												, this_t.localScale.y.ToString()
-												, this_t.localScale.z.ToString());
+								////todo: replace with event
+								//Debug.LogWarningFormat("ScaleEvent on {0}: [{1} {2} {3}]"
+								//				, this_t.name
+								//				, this_t.localScale.x.ToString()
+								//				, this_t.localScale.y.ToString()
+								//				, this_t.localScale.z.ToString());
+								var scale_event = JointScaleEvent.Create(GlobalTargets.Others);
+								scale_event.pedId = pedId;
+								scale_event.jointId = jointId;
+								scale_event.scale = this_t.localScale;
+								scale_event.Send();
 							}
 							jointId ++;
 						}

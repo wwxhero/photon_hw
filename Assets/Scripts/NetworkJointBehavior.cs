@@ -15,10 +15,10 @@ public class NetworkJointBehavior : Bolt.EntityBehaviour<IJointState> {
 			DebugLog.Format("binding start:({0}, {1})", jointId.pedId, jointId.jointId);
 		GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
 		Debug.Assert(null != scenario_obj);
-        ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
-        GameObject ped = scenario_ctrl.m_Peds[jointId.pedId];
+		ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
+		GameObject ped = scenario_ctrl.m_Peds[jointId.pedId];
 		JointsPool joints = ped.GetComponent<JointsPool>();
-        Debug.Assert(joints.m_joints.Count > jointId.jointId);
+		Debug.Assert(joints.m_joints.Count > jointId.jointId);
 		m_tranLocal = joints.m_joints[jointId.jointId];
 		if (m_debug)
 			DebugLog.Format("binding end:({0}, {1})", ped.name, m_tranLocal.name);
