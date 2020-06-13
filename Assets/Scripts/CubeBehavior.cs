@@ -39,7 +39,7 @@ namespace Bolt.Samples.GettingStarted
 
 			string [] ownership = {"not owned", "owner"};
 			int ownership_i = entity.IsOwner ? 1 : 0;
-			DebugLog.Format("CubeBehavior.Attached:{0}", ownership[ownership_i]);
+			DebugLog.InfoFormat("CubeBehavior.Attached:{0}", ownership[ownership_i]);
 		}
 
 		void OnGUI()
@@ -101,7 +101,7 @@ namespace Bolt.Samples.GettingStarted
 			{
 				WeaponObjects[i].SetActive(false);
 			}
-			DebugLog.Format("Weapon active index:{0}", state.WeaponActiveIndex);
+			DebugLog.InfoFormat("Weapon active index:{0}", state.WeaponActiveIndex);
 			if (state.WeaponActiveIndex >= 0)
 			{
 				int objectId = state.WeaponArray[state.WeaponActiveIndex].WeaponId;

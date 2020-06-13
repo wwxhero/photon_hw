@@ -346,7 +346,7 @@ public class ScenarioControl : MonoBehaviour
 								bool ownPed = (localIps.Contains(idPed));
 								if (m_debug)
 								{
-									DebugLog.Format("CreatePed({0}, {1}, {2}, {3})\n"
+									DebugLog.InfoFormat("CreatePed({0}, {1}, {2}, {3})\n"
 										, ownPed.ToString()
 										, name_ped_attr.Value
 										, p.ToString()

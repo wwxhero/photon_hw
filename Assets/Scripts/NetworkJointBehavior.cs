@@ -12,7 +12,7 @@ public class NetworkJointBehavior : Bolt.EntityBehaviour<IJointState> {
 		state.SetTransforms(state.JointTransform, transform);
 		var jointId = (LocalJointId)entity.AttachToken;
 		if (m_debug)
-			DebugLog.Format("binding start:({0}, {1})", jointId.pedId, jointId.jointId);
+			DebugLog.InfoFormat("binding start:({0}, {1})", jointId.pedId, jointId.jointId);
 		GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
 		Debug.Assert(null != scenario_obj);
 		ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
@@ -21,7 +21,7 @@ public class NetworkJointBehavior : Bolt.EntityBehaviour<IJointState> {
 		Debug.Assert(joints.m_joints.Count > jointId.jointId);
 		m_tranLocal = joints.m_joints[jointId.jointId];
 		if (m_debug)
-			DebugLog.Format("binding end:({0}, {1})", ped.name, m_tranLocal.name);
+			DebugLog.InfoFormat("binding end:({0}, {1})", ped.name, m_tranLocal.name);
 	}
 
 

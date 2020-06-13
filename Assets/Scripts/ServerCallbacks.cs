@@ -26,7 +26,7 @@ namespace Bolt.Samples.GettingStarted
 		{
 			registerDoneCallback(() =>
 			{
-				DebugLog.Format("Server Shutdown Done with Reason: {0}", disconnectReason);
+				DebugLog.InfoFormat("Server Shutdown Done with Reason: {0}", disconnectReason);
 				SceneManager.LoadScene(0);
 			});
 		}
