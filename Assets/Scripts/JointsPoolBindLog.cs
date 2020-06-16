@@ -240,14 +240,14 @@ public class JointsPoolBindLog : JointsPool
 			Transform j = name2transform[name];
 			if (null != j)
 			{
-                Vector3 p = j.localPosition;
-                logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
+				Vector3 p = j.localPosition;
+				logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
 											 , p[0], p[1], p[2]));
-                Quaternion q = j.localRotation;
-                logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}, {3,9:F4}\n"
+				Quaternion q = j.localRotation;
+				logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}, {3,9:F4}\n"
 											 , q.w, q.x, q.y, q.z));
-                Vector3 s = j.localScale;
-                logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
+				Vector3 s = j.localScale;
+				logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
 											 , s[0], s[1], s[2]));
 
 			}
@@ -260,5 +260,17 @@ public class JointsPoolBindLog : JointsPool
 		logger = null;
 	}
 
+	private void Update()
+	{
+		foreach (Transform t in m_joints)
+		{
+			Matrix4x4 l2w = t.localToWorldMatrix;
+			Matrix4x4 w2p = (null == t.parent ? Matrix4x4.identity : t.parent.worldToLocalMatrix);
+			Matrix4x4 l2p = w2p * l2w;
+
+			Matrix4x4 l2p_2 = Matrix4x4.TRS(t.localPosition, t.localRotation, t.localScale);
+			Debug.Assert(l2p == l2p_2);
+		}
+	}
 
 }
