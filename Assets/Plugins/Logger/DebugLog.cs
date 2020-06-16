@@ -6,14 +6,14 @@ public class DebugLog
 	private loggerSrvLib.Logger m_logger;
 	private static DebugLog g_dbgLogger = new DebugLog();
 
-	public static void Out(object msg, string prefix = "")
+	private static void Out(object msg, string prefix = "")
 	{
 		string item = prefix + msg + "\n";
 		g_dbgLogger.m_logger.LogOut(item);
 		g_dbgLogger.m_logger.Dump();
 	}
 
-	public static void OutFormat(string format, params object[] args)
+	private static void OutFormat(string format, params object[] args)
 	{
 		string msg = string.Format(format, args);
 		string item = msg + "\n";
