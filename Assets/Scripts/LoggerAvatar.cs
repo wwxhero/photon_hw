@@ -9,7 +9,7 @@ public class LoggerAvatar : MonoBehaviour {
 	bool m_local;
 	readonly string [] c_fields = {"r_w", "r_x", "r_y", "r_z"
 								, "t_x", "t_y", "t_z"
-								, "time"};
+								, "time", "frame"};
 	public void Initialize(string[] joints, bool local)
 	{
 		m_local = local;
@@ -36,7 +36,7 @@ public class LoggerAvatar : MonoBehaviour {
 				}
 			, (Transform this_t) => { }
 			);
-		strHeader += string.Format(", {0}\n", c_fields[7]);
+		strHeader += string.Format(", {0}, {1}\n", c_fields[7], c_fields[8]);
 		LogOutInPack(strHeader);
 	}
 
@@ -76,7 +76,7 @@ public class LoggerAvatar : MonoBehaviour {
 										, q.w, q.x, q.y, q.z
 										, t.x, t.y, t.z);
 		}
-		strItem += string.Format(", {0}\n", System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond);
+		strItem += string.Format(", {0}, {1}\n", System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond, Time.frameCount);
 		LogOutInPack(strItem);
 	}
 
