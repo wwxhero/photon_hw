@@ -179,7 +179,6 @@ public class JointsPoolBindLog : JointsPool
 		, "finger4-3.R"
 		, "finger5-3.R"
 	};
-
 	void Start()
 	{
 		Dictionary<string, Transform> name2transform = new Dictionary<string, Transform>();
@@ -188,28 +187,77 @@ public class JointsPoolBindLog : JointsPool
 			name2transform[j.name] = j;
 		}
 
-		DebugLog.Out("Global Matrix:");
+		loggerSrvLib.Logger logger = new loggerSrvLib.Logger();
 
+		logger.Create("Global_matrice.log");
 		foreach(string name in s_itemNames)
 		{
-			DebugLog.OutFormat("    Item name: {0}", name);
-			DebugLog.Out("    Matrix value:");
+			logger.LogOut("    Item name: " + name + '\n');
+			logger.LogOut("    Matrix value:" + '\n');
 			Transform j = name2transform[name];
 			if (null != j)
 			{
 				Matrix4x4 m = j.localToWorldMatrix;
 				Matrix4x4 m_t = m.transpose;
-				string strItem = "";
 				for (int k = 0; k < 4; k++)
 				{
-					strItem += string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}, {3,9:F4}\n"
-											 , m_t[k, 0], m_t[k, 1], m_t[k, 2], m_t[k, 3]);
+					logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}, {3,9:F4}\n"
+											 , m_t[k, 0], m_t[k, 1], m_t[k, 2], m_t[k, 3]));
 				}
-				DebugLog.Out(strItem);
+
 			}
 			else
-				DebugLog.Out("            null");
+				logger.LogOut("            null");
 		}
+		logger.Close();
+
+		logger.Create("Global_transform.log");
+		foreach(string name in s_itemNames)
+		{
+			logger.LogOut("    Item name: " + name + '\n');
+			Transform j = name2transform[name];
+			if (null != j)
+			{
+				Vector3 p = j.position;
+				logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
+											 , p[0], p[1], p[2]));
+				Quaternion q = j.rotation;
+				logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}, {3,9:F4}\n"
+											 , q.w, q.x, q.y, q.z));
+				Vector3 s = j.lossyScale;
+				logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
+											 , s[0], s[1], s[2]));
+			}
+			else
+				logger.LogOut("            null");
+		}
+		logger.Close();
+
+		logger.Create("Local_transform.log");
+		foreach(string name in s_itemNames)
+		{
+			logger.LogOut("    Item name: " + name + '\n');
+			Transform j = name2transform[name];
+			if (null != j)
+			{
+                Vector3 p = j.localPosition;
+                logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
+											 , p[0], p[1], p[2]));
+                Quaternion q = j.localRotation;
+                logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}, {3,9:F4}\n"
+											 , q.w, q.x, q.y, q.z));
+                Vector3 s = j.localScale;
+                logger.LogOut(string.Format("        {0,9:F4}, {1,9:F4}, {2,9:F4}\n"
+											 , s[0], s[1], s[2]));
+
+			}
+			else
+				logger.LogOut("            null");
+		}
+		logger.Close();
+
+
+		logger = null;
 	}
 
 
