@@ -70,7 +70,7 @@ public class ScenarioControl_VRIKAccuEva_mockVR : MonoBehaviour {
 
 					foreach (GameObject go in gos)
 					{
-						LoggerAvatar logger = go.GetComponent<LoggerAvatar>();
+						LoggerAvatar logger = go.AddComponent<LoggerAvatar>();
 						logger.Initialize(names_arr, false);
 					}
 

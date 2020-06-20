@@ -320,5 +320,8 @@ MonoBehaviour:
   - C:\Users\XPS\unity3DProjects\photon_hw\Lakshimi.csv
   - C:\Users\XPS\unity3DProjects\photon_hw\Wanxin.csv
   m_logTypes: 0000000000000000
+  m_prefabs:
+  - {fileID: 0}
+  - {fileID: 0}
   m_nFrame: 0
   m_play: 0

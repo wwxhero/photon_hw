@@ -17,9 +17,34 @@ public class LogItem
 	public double ticks; //in millisecond
 	public Transform_log [] transforms;
 
+	static int s_id = 0;
+	static void Parse4Veh(string path, Dictionary<int, LogItem> [] records)
+	{
+		Debug.Assert(false);
+	}
+
+	static void Parse4Ped(string path, Dictionary<int, LogItem> [] records)
+	{
+		List<LogItem> rawRecords = new List<LogItem>();
+
+	}
+
 	public static void Parse(LogType type, string path, Dictionary<int, LogItem> [] records)
 	{
-		Debug.Assert(false); //to be completed!!!
+		switch(type)
+		{
+			case LogType.ped:
+			{
+				Parse4Ped(path, records);
+				break;
+			}
+			case LogType.veh:
+			{
+				Parse4Veh(path, records);
+				break;
+			}
+		}
+		s_id ++;
 	}
 };
 

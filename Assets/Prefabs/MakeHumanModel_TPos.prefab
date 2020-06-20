@@ -1134,7 +1134,6 @@ GameObject:
   - component: {fileID: 4451755947957008}
   - component: {fileID: 95771683824129682}
   - component: {fileID: 114953471434219896}
-  - component: {fileID: 114372130692218774}
   m_Layer: 0
   m_Name: MakeHumanModel_TPos
   m_TagString: Untagged
@@ -5091,17 +5090,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114372130692218774
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1425134890698408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfaf2b527b1b2cf409331bc5a2eb87a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114953471434219896
 MonoBehaviour:
   m_ObjectHideFlags: 1

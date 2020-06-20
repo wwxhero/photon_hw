@@ -6,11 +6,12 @@ using LogItem_n = System.Collections.Generic.Dictionary<int, LogItem>;
 public class LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
-    [RangeAttribute(0, 300)]
-    public int m_nFrame = 0;
-    public bool m_play = false;
+	public GameObject [] m_prefabs;
+	[RangeAttribute(0, 300)]
+	public int m_nFrame = 0;
+	public bool m_play = false;
 
-    LogItem_n [] m_records;
+	LogItem_n [] m_records;
 	int c_nFrameBase = 0;
 	HashSet<int> m_rc = new HashSet<int>();
 	HashSet<int> m_rcPrime = new HashSet<int>();
@@ -27,8 +28,8 @@ public class LogPlayBack : MonoBehaviour {
 		{
 			m_nFrame ++;
 			m_play = UpdateFrame();
-            if (!m_play)
-                m_nFrame --;
+			if (!m_play)
+				m_nFrame --;
 		}
 	}
 
@@ -52,8 +53,8 @@ public class LogPlayBack : MonoBehaviour {
 		int i_offset = m_nFrame - c_nFrameBase;
 		if (i_offset < 0)
 			return true;
-		else if(null != m_records 
-            && m_nFrame < m_records.Length)
+		else if(null != m_records
+			&& m_nFrame < m_records.Length)
 		{
 			LogItem_n items = m_records[m_nFrame];
 			foreach (KeyValuePair<int, LogItem> pair in items)

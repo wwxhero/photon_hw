@@ -10,7 +10,7 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour
 	public Rect _opButtonRect;
 	string[] s_title = { "test for variable joints", "log joints", "quit" };
 	public RuntimeAnimatorController[] m_refControllers;
-	int m_state = 0;
+	int m_state = 0; //0: s_title[0]; 1: s_title[1]; 2: s_title[2]
 
 	Transform corres(Transform root_t, Transform root_ik, Transform ref_ik)
 	{
@@ -109,7 +109,7 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour
 
 					foreach (GameObject go in gos)
 					{
-						LoggerAvatar logger = go.GetComponent<LoggerAvatar>();
+						LoggerAvatar logger = go.AddComponent<LoggerAvatar>();
 						logger.Initialize(names_arr, false);
 					}
 					Animator anim = m_refPhysical.GetComponent<Animator>();

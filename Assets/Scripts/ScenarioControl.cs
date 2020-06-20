@@ -355,7 +355,8 @@ public class ScenarioControl : MonoBehaviour
 								Quaternion q = Quaternion.Euler(r);
 								GameObject ped = Instantiate(m_pedPrefab, p, q);
 								ped.name = name_ped_attr.Value;
-								ped.GetComponent<LoggerAvatar>().Initialize(m_lstNetworkingJoints, true);
+								LoggerAvatar logger = ped.AddComponent<LoggerAvatar>();
+								logger.Initialize(m_lstNetworkingJoints, true);
 								if (ownPed)
 								{
 									m_ownPed = ped;
