@@ -20,8 +20,8 @@ public class LogItem
 	public int nFrame;
 	public double ticks; //in millisecond
 	public Transform_log [] transforms;
-	static bool c_debug = true;
-	static int s_id = 0;
+	static bool c_debug = false;
+	static int s_idStatic = 0;
 
 	static bool NextLine(BufferedStream buff, ref string line)
 	{
@@ -159,7 +159,7 @@ public class LogItem
 					DebugLog.InfoFormat(strItem);
 				}
 				LogItem item = new LogItem {
-										  id = s_id
+										  id = s_idStatic
 										, type = LogType.ped
 										, nFrame = nFrame
 										, ticks = ticks
@@ -175,14 +175,10 @@ public class LogItem
 				}
 				id2item[item.id] = item;
 			}
-
 			nItem ++;
 		}
 
-		s_id ++;
-
-
-
+		s_idStatic ++;
 	}
 
 	public static void Parse(LogType type, string path, List<Id2Item> records)
@@ -200,7 +196,6 @@ public class LogItem
 				break;
 			}
 		}
-		s_id ++;
 	}
 };
 
