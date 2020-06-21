@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using LogItem_n = System.Collections.Generic.Dictionary<int, LogItem>;
+using Id2Item = System.Collections.Generic.Dictionary<int, LogItem>;
 
 public class LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
@@ -11,7 +11,7 @@ public class LogPlayBack : MonoBehaviour {
 	public int m_nFrame = 0;
 	public bool m_play = false;
 
-	LogItem_n [] m_records;
+	List<Id2Item> m_records = new List<Id2Item>();
 	int c_nFrameBase = 0;
 	HashSet<int> m_rc = new HashSet<int>();
 	HashSet<int> m_rcPrime = new HashSet<int>();
@@ -20,6 +20,7 @@ public class LogPlayBack : MonoBehaviour {
 		Debug.Assert(m_logFiles.Length == m_logTypes.Length);
 		for (int log_i = 0; log_i < m_logFiles.Length; log_i ++)
 			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records);
+
 	}
 
 	// Update is called once per frame
@@ -54,9 +55,9 @@ public class LogPlayBack : MonoBehaviour {
 		if (i_offset < 0)
 			return true;
 		else if(null != m_records
-			&& m_nFrame < m_records.Length)
+			&& m_nFrame < m_records.Count)
 		{
-			LogItem_n items = m_records[m_nFrame];
+			Id2Item items = m_records[m_nFrame];
 			foreach (KeyValuePair<int, LogItem> pair in items)
 				m_rcPrime.Add(pair.Key);
 
