@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Id2Item = System.Collections.Generic.Dictionary<int, LogItem>;
+using Id2GO = System.Collections.Generic.Dictionary<int, LogGO>;
 
 public class LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
@@ -15,6 +16,7 @@ public class LogPlayBack : MonoBehaviour {
 	int c_nFrameBase = 0;
 	HashSet<int> m_rc = new HashSet<int>();
 	HashSet<int> m_rcPrime = new HashSet<int>();
+	Id2GO m_id2go = new Id2GO();
 	// Use this for initialization
 	void Start () {
 		Debug.Assert(m_logFiles.Length == m_logTypes.Length);
@@ -25,28 +27,39 @@ public class LogPlayBack : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		bool played = UpdateFrame();
+		m_play = m_play && played;
 		if (m_play)
-		{
 			m_nFrame ++;
-			m_play = UpdateFrame();
-			if (!m_play)
-				m_nFrame --;
-		}
 	}
 
 	void UpdateObject(LogItem item)
 	{
-		Debug.Assert(false); //not yet done!!!
+		LogGO go = null;
+		if (m_id2go.TryGetValue(item.id, out go))
+			go.Play(item);
 	}
 
 	void DeleteObject(int id)
 	{
-		Debug.Assert(false); //not yet done!!!
+		LogGO go = null;
+		if (m_id2go.TryGetValue(id, out go))
+		{
+			Object.Destroy(go.gameObject);
+			m_id2go.Remove(id);
+		}
 	}
 
 	void CreateObject(LogItem item)
 	{
-		Debug.Assert(false); //to be completed
+		GameObject obj = Instantiate(m_prefabs[item.id], item.transforms[0].pos, item.transforms[0].ori);
+		LogGO go = null;
+		if (LogItem.LogType.ped == item.type)
+			go = obj.AddComponent<LogGOPed>();
+		else
+			go = obj.AddComponent<LogGOVeh>();
+		go.Play(item);
+		m_id2go[item.id] = go;
 	}
 
 	bool UpdateFrame()
