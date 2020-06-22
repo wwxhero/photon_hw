@@ -121,7 +121,7 @@ public class LogItem
 
 	static void Parse4Ped(string path, List<Id2Item> records)
 	{
-		int n_joints = ScenarioControl.m_lstNetworkingJoints.Length + 1; //+1 for entity
+		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
 
 		List<LogItem> rawRecords = new List<LogItem>();
 

@@ -298,6 +298,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: 17107038707284c4482eba1e2f2b9ea8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3048
+      objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: 17107038707284c4482eba1e2f2b9ea8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3048
+      objectReference: {fileID: 0}
+    - target: {fileID: 400006, guid: 17107038707284c4482eba1e2f2b9ea8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.3048
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 17107038707284c4482eba1e2f2b9ea8, type: 3}
   m_IsPrefabParent: 0
@@ -317,11 +329,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_logFiles:
-  - C:\Users\XPS\unity3DProjects\photon_hw\Lakshimi.csv
   - C:\Users\XPS\unity3DProjects\photon_hw\Wanxin.csv
-  m_logTypes: 0000000000000000
+  m_logTypes: 00000000
   m_prefabs:
-  - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
   - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
   m_nFrame: 0
   m_play: 0

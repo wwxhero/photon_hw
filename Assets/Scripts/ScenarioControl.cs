@@ -270,7 +270,7 @@ public class ScenarioControl : MonoBehaviour
 	[HideInInspector] public GameObject m_ownPed;
 	[HideInInspector] public int m_ownPedId;
 	[HideInInspector] public Dictionary<int, GameObject> m_Peds = new Dictionary<int, GameObject>();
-	[HideInInspector] public static string[] m_lstNetworkingJoints = {
+	[HideInInspector] public static string[] s_lstNetworkingJoints = {
 									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
 									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
 									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
@@ -356,7 +356,7 @@ public class ScenarioControl : MonoBehaviour
 								GameObject ped = Instantiate(m_pedPrefab, p, q);
 								ped.name = name_ped_attr.Value;
 								LoggerAvatar logger = ped.AddComponent<LoggerAvatar>();
-								logger.Initialize(m_lstNetworkingJoints, true);
+								logger.Initialize(s_lstNetworkingJoints, true);
 								if (ownPed)
 								{
 									m_ownPed = ped;

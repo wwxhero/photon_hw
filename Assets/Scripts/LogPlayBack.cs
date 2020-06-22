@@ -8,7 +8,7 @@ public class LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
 	public GameObject [] m_prefabs;
-	[RangeAttribute(0, 300)]
+	[RangeAttribute(0, 12000)]
 	public int m_nFrame = 0;
 	public bool m_play = false;
 
@@ -55,7 +55,11 @@ public class LogPlayBack : MonoBehaviour {
 		GameObject obj = Instantiate(m_prefabs[item.id], item.transforms[0].pos, item.transforms[0].ori);
 		LogGO go = null;
 		if (LogItem.LogType.ped == item.type)
-			go = obj.AddComponent<LogGOPed>();
+		{
+			LogGOPed ped = obj.AddComponent<LogGOPed>();
+			go = ped;
+			ped.Initialize();
+		}
 		else
 			go = obj.AddComponent<LogGOVeh>();
 		go.Play(item);

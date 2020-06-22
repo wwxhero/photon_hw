@@ -65,7 +65,7 @@ namespace Bolt.Samples.GettingStarted
 													, root_t.rotation);
 			root_e.transform.name = root_t.name;
 			bind_stk.Push(new Pair<Transform, BoltEntity>(root_t, root_e));
-			HashSet<string> names = new HashSet<string>(ScenarioControl.m_lstNetworkingJoints);
+			HashSet<string> names = new HashSet<string>(ScenarioControl.s_lstNetworkingJoints);
 
 			JointsPool.Traverse_d(root_t
 					, (Transform this_t) =>
