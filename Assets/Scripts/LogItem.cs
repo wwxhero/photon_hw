@@ -211,8 +211,8 @@ public class LogItem
 				int n_rt = (records_RT[i_RT])[s_idStatic].nFrame;
 				if (n_r_s <= n_rt) //n_r_s <= n_rt
 					i_S ++;
-				Debug.Assert((n_rt = (records_RT[i_RT])[s_idStatic].nFrame) < (n_r_s = (records_S[i_S + 1])[s_idStatic].nFrame))
-					&& (n_l_s = (records_S[i_S])[s_idStatic].nFrame) <= (n_rt = (records_RT[i_RT])[s_idStatic].nFrame);
+				Debug.Assert((n_rt = (records_RT[i_RT])[s_idStatic].nFrame) < (n_r_s = (records_S[i_S + 1])[s_idStatic].nFrame)
+							&& (n_l_s = (records_S[i_S])[s_idStatic].nFrame) <= (n_rt = (records_RT[i_RT])[s_idStatic].nFrame));
 				Transform_log [] trans_dst = (records[i_RT])[s_idStatic].transforms;
 				Transform_log [] trans_src_rt = (records_RT[i_RT])[s_idStatic].transforms;
 				Transform_log [] trans_src_s = (records_S[i_S])[s_idStatic].transforms;
