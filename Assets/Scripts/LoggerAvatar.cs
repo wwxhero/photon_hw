@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoggerAvatar : MonoBehaviour {
-	int c_logPackCap = 512;
-	loggerSrvLib.Logger m_logger;
+public class LoggerAvatar : LoggerObj {
 	List<Transform> m_lstTrans = new List<Transform>();
 	bool m_local;
 	readonly string [] c_fields = {"time", "frame"
@@ -14,9 +12,7 @@ public class LoggerAvatar : MonoBehaviour {
 	{
 		m_local = local;
 		HashSet<string> names = new HashSet<string>(joints);
-		m_logger = new loggerSrvLib.Logger();
-		string name = string.Format("{0}.csv", transform.name);
-		m_logger.Create(name);
+		base.Initialize(transform.name);
 		string strHeader = string.Format("{0}, {1}", c_fields[0], c_fields[1]);
 
 		strHeader += string.Format(", {0}.{1}, {0}.{2}, {0}.{3}, {0}.{4}, {0}.{5}, {0}.{6}, {0}.{7}"
@@ -78,23 +74,5 @@ public class LoggerAvatar : MonoBehaviour {
 		}
 		strItem += "\n";
 		LogOutInPack(strItem);
-	}
-
-	void OnDestroy()
-	{
-		if (null != m_logger)
-			m_logger.Close();
-		m_logger = null;
-	}
-
-	void LogOutInPack(string item)
-	{
-		int n = item.Length;
-		int L = c_logPackCap;
-		for (int i = 0; i < n; i += L)
-		{
-			string item_i = item.Substring(i, Mathf.Min(n-i, L));
-			m_logger.LogOut(item_i);
-		}
 	}
 }
