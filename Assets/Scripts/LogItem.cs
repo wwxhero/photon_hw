@@ -10,6 +10,7 @@ public struct Transform_log
 {
 	public Vector3 pos;
 	public Quaternion ori;
+	public Vector3 scl;
 };
 
 public class LogItem
@@ -119,7 +120,7 @@ public class LogItem
 		Debug.Assert(false);
 	}
 
-	static void Parse4Ped(string path, List<Id2Item> records)
+	static void Parse4Ped_RT(string path, List<Id2Item> records)
 	{
 		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
 
@@ -177,8 +178,57 @@ public class LogItem
 			}
 			nItem ++;
 		}
+	}
 
+	static bool Parse4Ped_S(string path, List<Id2Item> records)
+	{
+		return false;
+	}
+
+	static void Parse4Ped(string path, List<Id2Item> records)
+	{
+		List<Id2Item> records_RT = records;
+		List<Id2Item> records_S = new List<Id2Item>();
+		Parse4Ped_RT(path, records_RT);
+		if (Parse4Ped_S(path, records_S))
+		{
+			Id2Item id2Item = new Id2Item();
+			records_S.Add(id2Item);
+			id2Item[s_idStatic] = new LogItem{
+									  id = s_idStatic
+									, type = LogType.ped
+									, nFrame = int.MaxValue
+									, ticks = int.MaxValue
+									, transforms = null
+								};
+			int i_RT = 0;
+			int i_S = 0;
+			while (i_RT < records_RT.Count
+				&& i_S < records_S.Count - 1)
+			{
+				int n_l_s = (records_S[i_S])[s_idStatic].nFrame;
+				int n_r_s = (records_S[i_S + 1])[s_idStatic].nFrame;
+				int n_rt = (records_RT[i_RT])[s_idStatic].nFrame;
+				if (n_r_s <= n_rt) //n_r_s <= n_rt
+					i_S ++;
+				Debug.Assert((n_rt = (records_RT[i_RT])[s_idStatic].nFrame) < (n_r_s = (records_S[i_S + 1])[s_idStatic].nFrame))
+					&& (n_l_s = (records_S[i_S])[s_idStatic].nFrame) <= (n_rt = (records_RT[i_RT])[s_idStatic].nFrame);
+				Transform_log [] trans_dst = (records[i_RT])[s_idStatic].transforms;
+				Transform_log [] trans_src_rt = (records_RT[i_RT])[s_idStatic].transforms;
+				Transform_log [] trans_src_s = (records_S[i_S])[s_idStatic].transforms;
+				Debug.Assert(trans_dst.Length == trans_src_s.Length
+							&& trans_dst.Length == trans_src_rt.Length);
+				for (int i_tran = 0; i_tran < trans_dst.Length; i_tran ++)
+				{
+					trans_dst[i_tran].pos = trans_src_rt[i_tran].pos;
+					trans_dst[i_tran].ori = trans_src_rt[i_tran].ori;
+					trans_dst[i_tran].scl = trans_src_s[i_tran].scl;
+				}
+				i_RT ++;
+			}
+		}
 		s_idStatic ++;
+
 	}
 
 	public static void Parse(LogType type, string path, List<Id2Item> records)
