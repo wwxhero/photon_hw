@@ -66,14 +66,16 @@ public class ScenarioControl : MonoBehaviour
 			ped.references.root.localScale = new Vector3(s_h, s_h, s_h);
 			ped.references.leftShoulder.localScale = new Vector3(1f, s_w, 1f);
 			ped.references.rightShoulder.localScale = new Vector3(1f, s_w, 1f);
-            if (notifyNetwork)
-			    NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
+			if (notifyNetwork)
+				NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
 													, ped.references.leftShoulder
 													, ped.references.rightShoulder});
+			LoggerAvatar_s logger = ped.gameObject.GetComponent<LoggerAvatar_s>();
+			logger.LogOut();
 		}
 
 		public void Apply(GameObject mockPhysic, RootMotion.FinalIK.VRIK ped, bool notifyNetwork = true)
-        {
+		{
 			float s_h = height / height0;
 			float s_w = width / (width0 * s_h);
 			MockPhysics mp = mockPhysic.GetComponent<MockPhysics>();
@@ -83,10 +85,12 @@ public class ScenarioControl : MonoBehaviour
 			mp.transform.localScale = new Vector3(s_h, s_h, s_h);
 			mp.m_leftShoulder.localScale = new Vector3(1f, s_w, 1f);
 			mp.m_rightShoulder.localScale = new Vector3(1f, s_w, 1f);
-            if (notifyNetwork)
-			    NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
+			if (notifyNetwork)
+				NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
 													, ped.references.leftShoulder
 													, ped.references.rightShoulder});
+			LoggerAvatar_s logger = ped.gameObject.GetComponent<LoggerAvatar_s>();
+			logger.LogOut();
 		}
 
 		public static string s_mockIp = "mockIp";
@@ -357,6 +361,8 @@ public class ScenarioControl : MonoBehaviour
 								ped.name = name_ped_attr.Value;
 								LoggerAvatar logger = ped.AddComponent<LoggerAvatar>();
 								logger.Initialize(s_lstNetworkingJoints, true);
+								LoggerAvatar_s logger_s = ped.AddComponent<LoggerAvatar_s>();
+								logger_s.Initialize(s_lstNetworkingJoints, true);
 								if (ownPed)
 								{
 									m_ownPed = ped;

@@ -111,6 +111,8 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour
 					{
 						LoggerAvatar logger = go.AddComponent<LoggerAvatar>();
 						logger.Initialize(names_arr, false);
+						LoggerAvatar_s logger_s = go.AddComponent<LoggerAvatar_s>();
+						logger_s.Initialize(names_arr, false);
 					}
 					Animator anim = m_refPhysical.GetComponent<Animator>();
 					anim.runtimeAnimatorController = m_refControllers[m_state];
