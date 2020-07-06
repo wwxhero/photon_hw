@@ -5201,7 +5201,6 @@ GameObject:
   m_Component:
   - component: {fileID: 781481736}
   - component: {fileID: 781481735}
-  - component: {fileID: 781481737}
   - component: {fileID: 781481738}
   m_Layer: 0
   m_Name: mock_physical
@@ -5253,17 +5252,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &781481737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 781481733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfaf2b527b1b2cf409331bc5a2eb87a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &781481738
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -90,7 +90,7 @@ namespace Bolt.Samples.GettingStarted
 				_timerRoutine = null;
 			}
 
-			DebugLog.Format("Session list updated: {0} total sessions", sessionList.Count);
+			DebugLog.InfoFormat("Session list updated: {0} total sessions", sessionList.Count);
 
 			foreach (var session in sessionList)
 			{

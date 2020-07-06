@@ -53,7 +53,7 @@ public class ScenarioControl_VRIKAccuEva_mockVR : MonoBehaviour {
 						JointsPoolVarTest joints = go.GetComponent<JointsPoolVarTest>();
 						foreach (Transform j in joints.VarJoints())
 						{
-							DebugLog.Format("\t{0}:\t{1}", i_go, j.name);
+							DebugLog.InfoFormat("\t{0}:\t{1}", i_go, j.name);
 							names[j.name] = null;
 						}
 					}
@@ -63,15 +63,17 @@ public class ScenarioControl_VRIKAccuEva_mockVR : MonoBehaviour {
 					foreach (var name in names)
 					{
 						names_arr[n_name ++] = name.Key;
-						DebugLog.Format("\tU:\t{0}", name.Key);
+						DebugLog.InfoFormat("\tU:\t{0}", name.Key);
 					}
 					DebugLog.Warning("}");
 
 
 					foreach (GameObject go in gos)
 					{
-						LoggerAvatar logger = go.GetComponent<LoggerAvatar>();
+						LoggerAvatar logger = go.AddComponent<LoggerAvatar>();
 						logger.Initialize(names_arr, false);
+						LoggerAvatar_s logger_s = go.AddComponent<LoggerAvatar_s>();
+						logger_s.Initialize(names_arr, false);
 					}
 
 					Animator anim = m_refPhysical.GetComponent<Animator>();

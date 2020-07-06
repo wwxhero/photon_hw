@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Xml;
 using System.Net;
 using System.Net.Sockets;
+using Bolt.Samples.GettingStarted;
 
 public class ScenarioControl : MonoBehaviour
 {
@@ -58,16 +59,22 @@ public class ScenarioControl : MonoBehaviour
 			return s_h_inv;
 		}
 
-		public void Apply(RootMotion.FinalIK.VRIK ped)
+		public void Apply(RootMotion.FinalIK.VRIK ped, bool notifyNetwork = true)
 		{
 			float s_h = height / height0;
 			float s_w = width / (width0 * s_h);
 			ped.references.root.localScale = new Vector3(s_h, s_h, s_h);
 			ped.references.leftShoulder.localScale = new Vector3(1f, s_w, 1f);
 			ped.references.rightShoulder.localScale = new Vector3(1f, s_w, 1f);
+			if (notifyNetwork)
+				NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
+													, ped.references.leftShoulder
+													, ped.references.rightShoulder});
+			LoggerAvatar_s logger = ped.gameObject.GetComponent<LoggerAvatar_s>();
+			logger.LogOut();
 		}
 
-		public void Apply(GameObject mockPhysic, RootMotion.FinalIK.VRIK ped)
+		public void Apply(GameObject mockPhysic, RootMotion.FinalIK.VRIK ped, bool notifyNetwork = true)
 		{
 			float s_h = height / height0;
 			float s_w = width / (width0 * s_h);
@@ -78,6 +85,12 @@ public class ScenarioControl : MonoBehaviour
 			mp.transform.localScale = new Vector3(s_h, s_h, s_h);
 			mp.m_leftShoulder.localScale = new Vector3(1f, s_w, 1f);
 			mp.m_rightShoulder.localScale = new Vector3(1f, s_w, 1f);
+			if (notifyNetwork)
+				NetworkCallbacks.ScaleJoints(new Transform[]{ped.references.root
+													, ped.references.leftShoulder
+													, ped.references.rightShoulder});
+			LoggerAvatar_s logger = ped.gameObject.GetComponent<LoggerAvatar_s>();
+			logger.LogOut();
 		}
 
 		public static string s_mockIp = "mockIp";
@@ -261,7 +274,7 @@ public class ScenarioControl : MonoBehaviour
 	[HideInInspector] public GameObject m_ownPed;
 	[HideInInspector] public int m_ownPedId;
 	[HideInInspector] public Dictionary<int, GameObject> m_Peds = new Dictionary<int, GameObject>();
-	[HideInInspector] public static string[] m_lstNetworkingJoints = {
+	[HideInInspector] public static string[] s_lstNetworkingJoints = {
 									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
 									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
 									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
@@ -337,7 +350,7 @@ public class ScenarioControl : MonoBehaviour
 								bool ownPed = (localIps.Contains(idPed));
 								if (m_debug)
 								{
-									DebugLog.Format("CreatePed({0}, {1}, {2}, {3})\n"
+									DebugLog.InfoFormat("CreatePed({0}, {1}, {2}, {3})\n"
 										, ownPed.ToString()
 										, name_ped_attr.Value
 										, p.ToString()
@@ -346,7 +359,10 @@ public class ScenarioControl : MonoBehaviour
 								Quaternion q = Quaternion.Euler(r);
 								GameObject ped = Instantiate(m_pedPrefab, p, q);
 								ped.name = name_ped_attr.Value;
-								ped.GetComponent<LoggerAvatar>().Initialize(m_lstNetworkingJoints, true);
+								LoggerAvatar logger = ped.AddComponent<LoggerAvatar>();
+								logger.Initialize(s_lstNetworkingJoints, true);
+								LoggerAvatar_s logger_s = ped.AddComponent<LoggerAvatar_s>();
+								logger_s.Initialize(s_lstNetworkingJoints, true);
 								if (ownPed)
 								{
 									m_ownPed = ped;
@@ -375,13 +391,13 @@ public class ScenarioControl : MonoBehaviour
 										caliCtrl.rightHandTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.rh];
 										caliCtrl.leftFootTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.lf];
 										caliCtrl.rightFootTracker = trackers_mp.m_trackersMt[(int)MockPhysics.Mount.rf];
-										m_confAvatar.Apply(m_trackers, ik);
+										m_confAvatar.Apply(m_trackers, ik, false);
 									}
 									else
 									{
 										m_trackers = steamVR;
 										Debug.Assert(null != m_confAvatar);
-										m_confAvatar.Apply(ik);
+										m_confAvatar.Apply(ik, false);
 									}
 									setLayer(ped, LAYER.ego_dynamic);
 									setLayer(m_trackers, LAYER.ego_dynamic);

@@ -14,6 +14,7 @@ public class SteamVR_Manager : SteamVR_TDManager
 	public Text m_refDispHeader;
 	public Text m_refDispBody;
 	public CanvasMgr m_refCanvasMgr;
+	protected float m_groundEle = 0;
 	protected GameObject m_mirrow;
 	bool m_trackersIdentified = false;
 	[HideInInspector]
@@ -162,7 +163,6 @@ public class SteamVR_Manager : SteamVR_TDManager
 		}
 		else
 		{
-			ScenarioControl ctrl = g_inst.m_senarioCtrl.GetComponent<ScenarioControl>();
 			Transform t = null;
 			bool controllerOn = (OpenVR.k_unTrackedDeviceIndexInvalid != g_inst.m_ctrlLIndex
 								&& OpenVR.k_unTrackedDeviceIndexInvalid != g_inst.m_ctrlRIndex);
@@ -190,8 +190,7 @@ public class SteamVR_Manager : SteamVR_TDManager
 			}
 			else
 			{
-				float y = t.localPosition.y - 0.015f; //assume the pad on tracker has 1 cm thickness
-				//ctrl.SetMapElevation(y);
+				g_inst.m_groundEle = t.localPosition.y - 0.015f; //assume the pad on tracker has 1 cm thickness
 				return true;
 			}
 		}
@@ -739,7 +738,8 @@ public class SteamVR_Manager : SteamVR_TDManager
 	{
 		if (g_inst.DEF_MOCKSTEAM)
 			Debug.LogWarning("SteamVR_Manager::actPersonpanelUpdateT");
-		ScenarioControl.ConfAvatar conf = g_inst.m_senarioCtrl.GetComponent<ScenarioControl>().m_confAvatar;
+		ScenarioControl ctrl = g_inst.m_senarioCtrl.GetComponent<ScenarioControl>();
+		ScenarioControl.ConfAvatar conf = ctrl.m_confAvatar;
 		g_inst.m_refCanvasMgr.UpdateData(conf, true);
 		RootMotion.FinalIK.VRIK ik = g_inst.m_avatar.GetComponent<RootMotion.FinalIK.VRIK>();
 		conf.Apply(ik);

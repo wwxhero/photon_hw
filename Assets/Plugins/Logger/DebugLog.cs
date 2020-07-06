@@ -5,40 +5,59 @@ public class DebugLog
 {
 	private loggerSrvLib.Logger m_logger;
 	private static DebugLog g_dbgLogger = new DebugLog();
-	public static void Format(string format, params object[] args)
+
+	private static void Out(object msg, string prefix = "")
 	{
-		string strPrefix = "Info:\t";
-		string strInfo = string.Format(format, args);
-		string item = strPrefix + strInfo + "\n";
+		string item = prefix + msg + "\n";
 		g_dbgLogger.m_logger.LogOut(item);
 		g_dbgLogger.m_logger.Dump();
+	}
+
+	private static void OutFormat(string format, params object[] args)
+	{
+		string msg = string.Format(format, args);
+		string item = msg + "\n";
+		g_dbgLogger.m_logger.LogOut(item);
+		g_dbgLogger.m_logger.Dump();
+	}
+
+	public static void Info(object info)
+	{
+		string strPrefix = "Info:\t";
+		Out(info, strPrefix);
+	}
+
+	public static void InfoFormat(string format, params object[] args)
+	{
+		string strPrefix = "Info:\t";
+		format = strPrefix + format;
+		OutFormat(format, args);
 	}
 
 	public static void Error(object message)
 	{
 		string strPrefix = "Error:\t";
-		string strInfo = message.ToString();
-		string item = strPrefix + strInfo + "\n";
-		g_dbgLogger.m_logger.LogOut(item);
-		g_dbgLogger.m_logger.Dump();
+		Out(message, strPrefix);
+	}
+
+	public static void ErrorFormat(string format, params object[] args)
+	{
+		string strPrefix = "Error:\t";
+		format = strPrefix + format;
+		OutFormat(format, args);
 	}
 
 	public static void Warning(object message)
 	{
 		string strPrefix = "Warning:\t";
-		string strInfo = message.ToString();
-		string item = strPrefix + strInfo + "\n";
-		g_dbgLogger.m_logger.LogOut(item);
-		g_dbgLogger.m_logger.Dump();
+		Out(message, strPrefix);
 	}
 
 	public static void WarningFormat(string format, params object[] args)
 	{
 		string strPrefix = "Warning:\t";
-		string strInfo = string.Format(format, args);
-		string item = strPrefix + strInfo + "\n";
-		g_dbgLogger.m_logger.LogOut(item);
-		g_dbgLogger.m_logger.Dump();
+		format = strPrefix + format;
+		OutFormat(format, args);
 	}
 
 	DebugLog()

@@ -14,7 +14,7 @@ namespace Bolt.Samples.GettingStarted
 		{
 			registerDoneCallback(() =>
 			{
-				DebugLog.Format("Client Shutdown Done with Reason: {0}", disconnectReason);
+				DebugLog.InfoFormat("Client Shutdown Done with Reason: {0}", disconnectReason);
 				SceneManager.LoadScene(0);
 			});
 		}
