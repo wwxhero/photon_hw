@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(LogPlayBack))]
-public class LogPlayBackEditor : Editor
+[CustomEditor(typeof(ScenarioControl_LogPlayBack))]
+public class ScenarioControl_LogPlayBackEditor : Editor
 {
 	public override void OnInspectorGUI()
 	{

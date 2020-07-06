@@ -4,7 +4,7 @@ using UnityEngine;
 using Id2Item = System.Collections.Generic.Dictionary<int, LogItem>;
 using Id2GO = System.Collections.Generic.Dictionary<int, LogGO>;
 
-public class LogPlayBack : MonoBehaviour {
+public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
 	public GameObject [] m_prefabs;
@@ -22,7 +22,6 @@ public class LogPlayBack : MonoBehaviour {
 		Debug.Assert(m_logFiles.Length == m_logTypes.Length);
 		for (int log_i = 0; log_i < m_logFiles.Length; log_i ++)
 			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records);
-
 	}
 
 	// Update is called once per frame
