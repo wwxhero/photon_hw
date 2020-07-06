@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Id2Item = System.Collections.Generic.Dictionary<int, LogItem>;
+using Id2Name = System.Collections.Generic.Dictionary<int, string>;
 using Id2GO = System.Collections.Generic.Dictionary<int, LogGO>;
 
 public class ScenarioControl_LogPlayBack : MonoBehaviour {
@@ -12,6 +13,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public int m_nFrame = 0;
 	public bool m_play = false;
 
+	Id2Name m_id2names = new Id2Name();
 	List<Id2Item> m_records = new List<Id2Item>();
 	int c_nFrameBase = 0;
 	HashSet<int> m_rc = new HashSet<int>();
@@ -21,7 +23,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	void Start () {
 		Debug.Assert(m_logFiles.Length == m_logTypes.Length);
 		for (int log_i = 0; log_i < m_logFiles.Length; log_i ++)
-			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records);
+			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records, m_id2names);
 	}
 
 	// Update is called once per frame
@@ -52,6 +54,12 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	void CreateObject(LogItem item)
 	{
 		GameObject obj = Instantiate(m_prefabs[item.id], item.transforms[0].pos, item.transforms[0].ori);
+		string name = null;
+        if (m_id2names.TryGetValue(item.id, out name))
+            obj.name = name;
+        else
+            obj.name = item.type.ToString() + "_" + item.id;
+
 		LogGO go = null;
 		if (LogItem.LogType.ped == item.type)
 		{

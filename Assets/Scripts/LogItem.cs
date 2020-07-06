@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using Id2Name = System.Collections.Generic.Dictionary<int, string>;
 using Id2Item = System.Collections.Generic.Dictionary<int, LogItem>;
 
 public struct Transform_log
@@ -23,6 +24,7 @@ public class LogItem
 	public Transform_log [] transforms;
 	static bool c_debug = false;
 	static int s_idStatic = 0;
+	static readonly string c_filesuffix = ".csv";
 
 	static bool NextLine(BufferedStream buff, ref string line)
 	{
@@ -185,12 +187,14 @@ public class LogItem
 		return false;
 	}
 
-	static void Parse4Ped(string path, List<Id2Item> records)
+	static void Parse4Ped(string name, List<Id2Item> records)
 	{
 		List<Id2Item> records_RT = records;
 		List<Id2Item> records_S = new List<Id2Item>();
-		Parse4Ped_RT(path, records_RT);
-		if (Parse4Ped_S(path, records_S))
+		string path_rt = name + c_filesuffix;
+		string path_s = name + "_s" + c_filesuffix;
+		Parse4Ped_RT(path_rt, records_RT);
+		if (Parse4Ped_S(path_s, records_S))
 		{
 			Id2Item id2Item = new Id2Item();
 			records_S.Add(id2Item);
@@ -231,18 +235,19 @@ public class LogItem
 
 	}
 
-	public static void Parse(LogType type, string path, List<Id2Item> records)
+	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name)
 	{
 		switch(type)
 		{
 			case LogType.ped:
 			{
-				Parse4Ped(path, records);
+				id2name[s_idStatic] = name;
+				Parse4Ped(name, records);
 				break;
 			}
 			case LogType.veh:
 			{
-				Parse4Veh(path, records);
+				Parse4Veh(name, records);
 				break;
 			}
 		}
