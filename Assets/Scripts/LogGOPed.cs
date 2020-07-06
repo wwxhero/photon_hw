@@ -29,6 +29,7 @@ public class LogGOPed : LogGO {
 		{
 			m_joints[i].localPosition = item.transforms[i].pos;
 			m_joints[i].localRotation = item.transforms[i].ori;
+			m_joints[i].localScale = item.transforms[i].scl;
 		}
 	}
 }

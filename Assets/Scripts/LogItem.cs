@@ -25,6 +25,7 @@ public class LogItem
 	static bool c_debug = false;
 	static int s_idStatic = 0;
 	static readonly string c_filesuffix = ".csv";
+	public delegate bool ParseRowTransform(BufferedStream buff, Transform_log[] transforms, int n_trans);
 
 	static bool NextLine(BufferedStream buff, ref string line)
 	{
@@ -88,7 +89,7 @@ public class LogItem
 		return double.TryParse(field, out value);
 	}
 
-	static bool ParseTransforms(BufferedStream buff, Transform_log[] transforms, int n_trans)
+	static bool ParseRow4Ped_rt(BufferedStream buff, Transform_log[] transforms, int n_trans)
 	{
 		bool valid_parse = true;
 		float [] v = new float[7];
@@ -113,6 +114,41 @@ public class LogItem
 			transforms[i_tran].pos.x = v[4];
 			transforms[i_tran].pos.y = v[5];
 			transforms[i_tran].pos.z = v[6];
+			transforms[i_tran].scl.x = 1;
+			transforms[i_tran].scl.y = 1;
+			transforms[i_tran].scl.z = 1;
+		}
+		return valid_parse; //todo: parse an array of transforms from buf
+	}
+
+	static bool ParseRow4Ped_s(BufferedStream buff, Transform_log[] transforms, int n_trans)
+	{
+		bool valid_parse = true;
+		float [] v = new float[3];
+		for (int i_tran = 0
+			; i_tran < n_trans
+			&& valid_parse
+			; i_tran ++)
+		{
+			for (int i = 0
+				; i < 3
+				&& valid_parse
+				; i ++)
+			{
+				string field;
+				NextField(buff, out field);
+				valid_parse = float.TryParse(field, out v[i]);
+			}
+			transforms[i_tran].ori.w = 1;
+			transforms[i_tran].ori.x = 0;
+			transforms[i_tran].ori.y = 0;
+			transforms[i_tran].ori.z = 0;
+			transforms[i_tran].pos.x = 0;
+			transforms[i_tran].pos.y = 0;
+			transforms[i_tran].pos.z = 0;
+			transforms[i_tran].scl.x = v[0];
+			transforms[i_tran].scl.y = v[1];
+			transforms[i_tran].scl.z = v[2];
 		}
 		return valid_parse; //todo: parse an array of transforms from buf
 	}
@@ -122,7 +158,7 @@ public class LogItem
 		Debug.Assert(false);
 	}
 
-	static void Parse4Ped_RT(string path, List<Id2Item> records)
+	static void ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records)
 	{
 		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
 
@@ -145,7 +181,7 @@ public class LogItem
 			transforms = new Transform_log[n_joints];
 			read = ParseDouble(buffer, out ticks)
 				&& ParseInt(buffer, out nFrame)
-				&& ParseTransforms(buffer, transforms, n_joints);
+				&& parser_row_trans(buffer, transforms, n_joints);
 			if (read)
 			{
 				if (c_debug)
@@ -182,20 +218,16 @@ public class LogItem
 		}
 	}
 
-	static bool Parse4Ped_S(string path, List<Id2Item> records)
-	{
-		return false;
-	}
-
 	static void Parse4Ped(string name, List<Id2Item> records)
 	{
 		List<Id2Item> records_RT = records;
 		List<Id2Item> records_S = new List<Id2Item>();
 		string path_rt = name + c_filesuffix;
 		string path_s = name + "_s" + c_filesuffix;
-		Parse4Ped_RT(path_rt, records_RT);
-		if (Parse4Ped_S(path_s, records_S))
+		ParseTable(path_rt, ParseRow4Ped_rt, records_RT);
+		if (File.Exists(path_s))
 		{
+            ParseTable(path_s, ParseRow4Ped_s, records_S);
 			Id2Item id2Item = new Id2Item();
 			records_S.Add(id2Item);
 			id2Item[s_idStatic] = new LogItem{
