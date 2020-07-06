@@ -267,14 +267,21 @@ public class LogItem
 
 	}
 
-	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name)
+	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name, ref int nFrameBase, ref int nFrameMax)
 	{
 		switch(type)
 		{
 			case LogType.ped:
 			{
-				id2name[s_idStatic] = name;
+				int id = s_idStatic;
 				Parse4Ped(name, records);
+				id2name[id] = name;
+				int nFrameBase_prime = (records[0])[id].nFrame;
+				int nFrameMax_prime = (records[records.Count-1])[id].nFrame;
+				if (nFrameBase > nFrameBase_prime)
+					nFrameBase = nFrameBase_prime;
+				if (nFrameMax < nFrameMax_prime)
+					nFrameMax = nFrameMax_prime;
 				break;
 			}
 			case LogType.veh:

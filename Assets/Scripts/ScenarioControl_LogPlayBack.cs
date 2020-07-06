@@ -9,13 +9,13 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
 	public GameObject [] m_prefabs;
-	[RangeAttribute(0, 12000)]
-	public int m_nFrame = 0;
-	public bool m_play = false;
+	[HideInInspector] public int c_nFrameBase = int.MaxValue;
+	[HideInInspector] public int c_nFrameMax = 0;
+	[HideInInspector] public int m_nFrame = 0;
+	[HideInInspector] public bool m_play = false;
 
 	Id2Name m_id2names = new Id2Name();
 	List<Id2Item> m_records = new List<Id2Item>();
-	int c_nFrameBase = 0;
 	HashSet<int> m_rc = new HashSet<int>();
 	HashSet<int> m_rcPrime = new HashSet<int>();
 	Id2GO m_id2go = new Id2GO();
@@ -23,7 +23,9 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	void Start () {
 		Debug.Assert(m_logFiles.Length == m_logTypes.Length);
 		for (int log_i = 0; log_i < m_logFiles.Length; log_i ++)
-			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records, m_id2names);
+			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records, m_id2names, ref c_nFrameBase, ref c_nFrameMax);
+
+		m_nFrame = c_nFrameBase;
 	}
 
 	// Update is called once per frame
@@ -55,10 +57,10 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	{
 		GameObject obj = Instantiate(m_prefabs[item.id], item.transforms[0].pos, item.transforms[0].ori);
 		string name = null;
-        if (m_id2names.TryGetValue(item.id, out name))
-            obj.name = name;
-        else
-            obj.name = item.type.ToString() + "_" + item.id;
+		if (m_id2names.TryGetValue(item.id, out name))
+			obj.name = name;
+		else
+			obj.name = item.type.ToString() + "_" + item.id;
 
 		LogGO go = null;
 		if (LogItem.LogType.ped == item.type)
@@ -79,9 +81,9 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 		if (i_offset < 0)
 			return true;
 		else if(null != m_records
-			&& m_nFrame < m_records.Count)
+			&& m_nFrame < c_nFrameMax)
 		{
-			Id2Item items = m_records[m_nFrame];
+			Id2Item items = m_records[i_offset];
 			foreach (KeyValuePair<int, LogItem> pair in items)
 				m_rcPrime.Add(pair.Key);
 
