@@ -283,7 +283,7 @@ public class ScenarioControl : MonoBehaviour
 									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
 								};
 	// Use this for initialization
-	public void LoadLocalAvatar()
+	public void Initialize(bool isServer)
 	{
 		try
 		{

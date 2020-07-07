@@ -48,7 +48,7 @@ namespace Bolt.Samples.GettingStarted
 			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
 			Debug.Assert(null != scenario_obj);
 			ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
-			scenario_ctrl.LoadLocalAvatar();
+			scenario_ctrl.Initialize(BoltNetwork.IsServer);
 			int pedId = scenario_ctrl.m_ownPedId;
 			int jointId = 0;
 
@@ -147,12 +147,6 @@ namespace Bolt.Samples.GettingStarted
 						{
 							if (joints.Contains(this_t))
 							{
-								////todo: replace with event
-								//Debug.LogWarningFormat("ScaleEvent on {0}: [{1} {2} {3}]"
-								//				, this_t.name
-								//				, this_t.localScale.x.ToString()
-								//				, this_t.localScale.y.ToString()
-								//				, this_t.localScale.z.ToString());
 								var scale_event = JointScaleEvent.Create(GlobalTargets.Others);
 								scale_event.pedId = pedId;
 								scale_event.jointId = jointId;
