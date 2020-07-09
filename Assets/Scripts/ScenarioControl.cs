@@ -286,7 +286,7 @@ public class ScenarioControl : MonoBehaviour
 									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
 									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
 								};
-	Dictionary<int, GameObject> m_Vehs = new Dictionary<int, GameObject>();
+	[HideInInspector] public Dictionary<int, GameObject> m_Vehs = new Dictionary<int, GameObject>();
 	int s_vehId = 0;
 	// Use this for initialization
 	public void Initialize(bool isServer)

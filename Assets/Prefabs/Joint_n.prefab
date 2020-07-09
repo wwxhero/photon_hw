@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 23310605689042880}
   - component: {fileID: 114607689920763024}
   m_Layer: 0
-  m_Name: Joint
+  m_Name: Joint_n
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -59,7 +59,7 @@ namespace Bolt.Samples.GettingStarted
 				pedId = pedId,
 				jointId = jointId
 			};
-			BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint
+			BoltEntity root_e = BoltNetwork.Instantiate(BoltPrefabs.Joint_n
 													, root_tok
 													, root_t.position
 													, root_t.rotation);
@@ -78,7 +78,7 @@ namespace Bolt.Samples.GettingStarted
 									pedId = pedId,
 									jointId = jointId
 								};
-								BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint
+								BoltEntity e_c = BoltNetwork.Instantiate(BoltPrefabs.Joint_n
 													, e_tok
 													, this_t.position
 													, this_t.rotation);
