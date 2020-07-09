@@ -6,14 +6,17 @@ using System.Xml;
 using System.Net;
 using System.Net.Sockets;
 using Bolt.Samples.GettingStarted;
+using Veh = System.Collections.Generic.KeyValuePair<int, UnityEngine.GameObject>;
 
 public class ScenarioControl : MonoBehaviour
 {
+	public GameObject [] m_vehsPrefab;
 	public GameObject m_pedPrefab;
 	public GameObject m_camInspectorPrefab;
 	public GameObject m_mockTrackersPrefab;
 	GameObject m_trackers;
 	Camera m_egoInspector;
+	Quaternion c_qOffsetVeh = new Quaternion(Mathf.Sin(-Mathf.PI/4), 0, 0, Mathf.Cos(-Mathf.PI/4));
 	public enum LAYER { scene_static = 8, peer_dynamic, host_dynamic, ego_dynamic, marker_dynamic };
 	public class ConfAvatar
 	{
@@ -271,6 +274,7 @@ public class ScenarioControl : MonoBehaviour
 	ConfMap m_confMap;
 	bool m_debug = true;
 	bool m_mockIp = true;
+	bool m_mockVeh = true;
 	[HideInInspector] public GameObject m_ownPed;
 	[HideInInspector] public int m_ownPedId;
 	[HideInInspector] public Dictionary<int, GameObject> m_Peds = new Dictionary<int, GameObject>();
@@ -282,6 +286,8 @@ public class ScenarioControl : MonoBehaviour
 									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
 									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
 								};
+	Dictionary<int, GameObject> m_Vehs = new Dictionary<int, GameObject>();
+	int s_vehId = 0;
 	// Use this for initialization
 	public void Initialize(bool isServer)
 	{
@@ -439,6 +445,7 @@ public class ScenarioControl : MonoBehaviour
 		if (m_debug)
 			m_confAvatar.DbgLog();
 
+		transform.Find("MockVehControl").gameObject.SetActive(isServer && m_mockVeh);
 	}
 
 
@@ -493,5 +500,28 @@ public class ScenarioControl : MonoBehaviour
 	{
 		m_egoInspector.gameObject.SetActive(true);
 		adjustInspector(ScenarioControl.InspectorHelper.Direction.up, InspectorHelper.ObjType.Map);
+	}
+
+	public Veh CreateVeh(Vector3 pos, Quaternion rot)
+	{
+		//fixme: make it networked
+		Debug.Assert(m_vehsPrefab.Length > 0);
+		int id = s_vehId ++;
+
+		m_Vehs[id] = (Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length], pos, rot * c_qOffsetVeh));
+		Veh veh = new Veh(id, m_Vehs[id]);
+		return veh;
+	}
+
+	public void DeleteVeh(int vid)
+	{
+		GameObject veh = null;
+		bool find = m_Vehs.TryGetValue(vid, out veh);
+		Debug.Assert(find);
+		if (find)
+		{
+			Destroy(veh);
+			m_Vehs.Remove(vid);
+		}
 	}
 }
