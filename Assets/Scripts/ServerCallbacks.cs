@@ -57,6 +57,7 @@ namespace Bolt.Samples.GettingStarted
 
 		public static void CreateNetworkingVeh(int vid, Vector3 pos, Quaternion rot)
 		{
+			Debug.Assert(BoltNetwork.IsServer);
 			var vid_n = new LocalVehId
 			{
 				id = vid
@@ -69,14 +70,15 @@ namespace Bolt.Samples.GettingStarted
 
 		public static void DestroyNetworkingVeh(int vid)
 		{
-			foreach (var entity in BoltNetwork.SceneObjects)
+			Debug.Assert(BoltNetwork.IsServer);
+			foreach (var entity in BoltNetwork.Entities)
 			{
 				if (entity.StateIs<IVehState>())
 				{
 					NetworkVehBehavior veh_n = entity.gameObject.GetComponent<NetworkVehBehavior>();
 					if (veh_n.id_n == vid)
 					{
-						BoltNetwork.Destroy(entity);
+						BoltNetwork.Destroy(entity.gameObject);
 						break;
 					}
 				}

@@ -47,7 +47,8 @@ public class MockVehControl : MonoBehaviour {
 				m_sLen[i_removed] = m_sLen[i_veh];
 				m_sLen[i_veh] = temp_s;
 
-				m_sceneCtrl.DeleteVeh(removing.Key);
+				Bolt.Samples.GettingStarted.GS_ServerCallbacks.DestroyNetworkingVeh(removing.Key);
+				m_sceneCtrl.DeleteLocalVeh(removing.Key);
 			}
 		}
 		if (n_removed > 0)
@@ -56,11 +57,13 @@ public class MockVehControl : MonoBehaviour {
 			m_sLen.RemoveRange(i_removed, n_removed);
 		}
 
-		if (Input.GetKeyDown(KeyCode.Tab))
+		if (Input.GetKeyDown(KeyCode.Alpha0))
 		{
 			Vector3 forward = c_route[1] - c_route[0];
 			Quaternion rot = Quaternion.LookRotation(forward, Vector3.up);
-			Veh veh = m_sceneCtrl.CreateVeh(c_route[0], rot);
+			Veh veh = m_sceneCtrl.CreateLocalVeh(c_route[0], rot);
+			Transform t = veh.Value.transform;
+			Bolt.Samples.GettingStarted.GS_ServerCallbacks.CreateNetworkingVeh(veh.Key, t.position, t.rotation);
 			m_vehi.Add(veh);
 			m_sLen.Add(0);
 		}

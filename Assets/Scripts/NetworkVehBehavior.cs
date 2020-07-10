@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Veh = System.Collections.Generic.KeyValuePair<int, UnityEngine.GameObject>;
 
 public class NetworkVehBehavior : Bolt.EntityBehaviour<IVehState> {
 
@@ -14,16 +15,39 @@ public class NetworkVehBehavior : Bolt.EntityBehaviour<IVehState> {
 		var vid = (LocalVehId)entity.AttachToken;
 		if (m_debug)
 			DebugLog.InfoFormat("veh binding start:({0})", vid.id);
+		id_n = vid.id;
 		GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
 		Debug.Assert(null != scenario_obj);
 		ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
 		GameObject veh = null;
-		bool bind_exists = scenario_ctrl.m_Vehs.TryGetValue(vid.id, out veh);
-		Debug.Assert(bind_exists);
-		if (bind_exists)
+		if (entity.IsOwner)
+		{
+			bool local_exists = scenario_ctrl.m_Vehs.TryGetValue(vid.id, out veh);
+			Debug.Assert(local_exists);
 			m_tranLocal = veh.transform;
+		}
+		else
+		{
+			Veh veh2 = scenario_ctrl.CreateLocalVeh(transform.position, transform.rotation, id_n);
+			m_tranLocal = veh2.Value.transform;
+		}
 	}
-
+	public override void Detached()
+	{
+		if (entity.IsOwner)
+		{
+			m_tranLocal = null;
+		}
+		else
+		{
+			GameObject scenario_obj = GameObject.FindGameObjectWithTag("scene");
+			Debug.Assert(null != scenario_obj);
+			ScenarioControl scenario_ctrl = scenario_obj.GetComponent<ScenarioControl>();
+			scenario_ctrl.DeleteLocalVeh(id_n);
+			m_tranLocal = null;
+		}
+		base.Detached();
+	}
 
 	// Update is called once per frame
 	void Update ()
