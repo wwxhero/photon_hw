@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UdpKit;
 using UnityEngine;
 
 namespace Bolt.Samples.GettingStarted
@@ -160,6 +161,15 @@ namespace Bolt.Samples.GettingStarted
 						}
 					);
 		}
+
+		public override void BoltShutdownBegin(AddCallback registerDoneCallback, UdpConnectionDisconnectReason disconnectReason)
+		{
+			foreach (var entity in BoltNetwork.Entities)
+            {
+                BoltNetwork.Destroy(entity.gameObject);
+            }
+            base.BoltShutdownBegin(registerDoneCallback, disconnectReason);           
+        }
 
 
 	}

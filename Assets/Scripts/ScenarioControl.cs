@@ -502,26 +502,47 @@ public class ScenarioControl : MonoBehaviour
 		adjustInspector(ScenarioControl.InspectorHelper.Direction.up, InspectorHelper.ObjType.Map);
 	}
 
-	public Veh CreateVeh(Vector3 pos, Quaternion rot)
+	public GameObject CreateLocalVeh(Vector3 pos, Quaternion rot, int id)
 	{
-		//fixme: make it networked
 		Debug.Assert(m_vehsPrefab.Length > 0);
-		int id = s_vehId ++;
-
-		m_Vehs[id] = (Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length], pos, rot * c_qOffsetVeh));
-		Veh veh = new Veh(id, m_Vehs[id]);
+		Debug.Assert(0 == s_vehId);
+		Quaternion rot_2 = rot * c_qOffsetVeh; //the vehicle is not aligned for rotation, thus offset it for alignment
+		GameObject veh = Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length], pos, rot_2);
+		m_Vehs[id] = veh;
 		return veh;
 	}
 
-	public void DeleteVeh(int vid)
+	public int CreateLocalVeh(Vector3 pos, Quaternion rot)
+	{
+		Debug.Assert(m_vehsPrefab.Length > 0);
+		int id = s_vehId ++;
+		Quaternion rot_2 = rot * c_qOffsetVeh; //the vehicle is not aligned for rotation, thus offset it for alignment
+		GameObject veh = Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length], pos, rot_2);
+		m_Vehs[id] = veh;
+		return id;
+	}
+
+	public void DeleteLocalVeh(int id)
 	{
 		GameObject veh = null;
-		bool find = m_Vehs.TryGetValue(vid, out veh);
+		bool find = m_Vehs.TryGetValue(id, out veh);
 		Debug.Assert(find);
 		if (find)
 		{
 			Destroy(veh);
-			m_Vehs.Remove(vid);
+			m_Vehs.Remove(id);
+		}
+	}
+
+	void OnDestroy()
+	{
+		foreach (var element in m_Peds)
+		{
+			Destroy(element.Value);
+		}
+		foreach (var element in m_Vehs)
+		{
+			Destroy(element.Value);
 		}
 	}
 }

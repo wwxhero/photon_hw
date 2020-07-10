@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Bolt.Samples.GettingStarted;
-using Veh = System.Collections.Generic.KeyValuePair<int, UnityEngine.GameObject>;
+
 
 public class MockVehControl : MonoBehaviour {
 	public float c_speedInKPH = 20;
@@ -10,7 +10,7 @@ public class MockVehControl : MonoBehaviour {
 	Vector3 c_velInMPS = Vector3.zero;
 	Vector3[] c_route = new Vector3[2]; //a simple line route
 	float	c_routeLen;
-	List<Veh> m_vehi = new List<Veh>();
+	List<NetworkVehBehavior> m_vehi = new List<NetworkVehBehavior>();
 	List<float> m_sLen = new List<float>();
 	ScenarioControl m_sceneCtrl = null;
 	// Use this for initialization
@@ -32,14 +32,14 @@ public class MockVehControl : MonoBehaviour {
 		int n_removed = 0;
 		for (int i_veh = m_vehi.Count - 1; i_veh > -1 ; i_veh --)
 		{
-			m_vehi[i_veh].Value.transform.position += c_velInMPS * Time.deltaTime;
+			m_vehi[i_veh].position += c_velInMPS * Time.deltaTime;
 			m_sLen[i_veh] += c_speedInMPS * Time.deltaTime;
 			if (m_sLen[i_veh] > c_routeLen)
 			{
 				i_removed --;
 				n_removed ++;
 
-				Veh removing = m_vehi[i_veh];
+				NetworkVehBehavior removing = m_vehi[i_veh];
 				m_vehi[i_veh] = m_vehi[i_removed];
 				m_vehi[i_removed] = removing;
 
@@ -47,8 +47,7 @@ public class MockVehControl : MonoBehaviour {
 				m_sLen[i_removed] = m_sLen[i_veh];
 				m_sLen[i_veh] = temp_s;
 
-				Bolt.Samples.GettingStarted.GS_ServerCallbacks.DestroyNetworkingVeh(removing.Key);
-				m_sceneCtrl.DeleteLocalVeh(removing.Key);
+				Bolt.Samples.GettingStarted.GS_ServerCallbacks.DestroyVeh(m_sceneCtrl, removing);
 			}
 		}
 		if (n_removed > 0)
@@ -61,9 +60,7 @@ public class MockVehControl : MonoBehaviour {
 		{
 			Vector3 forward = c_route[1] - c_route[0];
 			Quaternion rot = Quaternion.LookRotation(forward, Vector3.up);
-			Veh veh = m_sceneCtrl.CreateLocalVeh(c_route[0], rot);
-			Transform t = veh.Value.transform;
-			Bolt.Samples.GettingStarted.GS_ServerCallbacks.CreateNetworkingVeh(veh.Key, t.position, t.rotation);
+			NetworkVehBehavior veh = Bolt.Samples.GettingStarted.GS_ServerCallbacks.CreateVeh(m_sceneCtrl, c_route[0], rot);
 			m_vehi.Add(veh);
 			m_sLen.Add(0);
 		}

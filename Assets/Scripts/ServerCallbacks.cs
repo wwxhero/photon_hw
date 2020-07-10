@@ -55,34 +55,27 @@ namespace Bolt.Samples.GettingStarted
 			}
 		}
 
-		public static void CreateNetworkingVeh(int vid, Vector3 pos, Quaternion rot)
+		public static NetworkVehBehavior CreateVeh(ScenarioControl scene, Vector3 pos, Quaternion rot)
 		{
 			Debug.Assert(BoltNetwork.IsServer);
+			int vid = scene.CreateLocalVeh(pos, rot);
 			var vid_n = new LocalVehId
 			{
 				id = vid
 			};
-			BoltNetwork.Instantiate(BoltPrefabs.Veh_n
+			BoltEntity entity = BoltNetwork.Instantiate(BoltPrefabs.Veh_n
 											, vid_n
 											, pos
 											, rot);
+			return entity.gameObject.GetComponent<NetworkVehBehavior>();
 		}
 
-		public static void DestroyNetworkingVeh(int vid)
+		public static void DestroyVeh(ScenarioControl scene, NetworkVehBehavior veh)
 		{
 			Debug.Assert(BoltNetwork.IsServer);
-			foreach (var entity in BoltNetwork.Entities)
-			{
-				if (entity.StateIs<IVehState>())
-				{
-					NetworkVehBehavior veh_n = entity.gameObject.GetComponent<NetworkVehBehavior>();
-					if (veh_n.id_n == vid)
-					{
-						BoltNetwork.Destroy(entity.gameObject);
-						break;
-					}
-				}
-			}
+			int vid = veh.id;
+			BoltNetwork.Destroy(veh.gameObject);
+			scene.DeleteLocalVeh(vid);
 		}
 	}
 }
