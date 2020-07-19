@@ -16,7 +16,7 @@ public class ScenarioControl : MonoBehaviour
 	public GameObject m_mockTrackersPrefab;
 	GameObject m_trackers;
 	Camera m_egoInspector;
-	Quaternion c_qOffsetVeh = new Quaternion(Mathf.Sin(-Mathf.PI/4), 0, 0, Mathf.Cos(-Mathf.PI/4));
+
 	public enum LAYER { scene_static = 8, peer_dynamic, host_dynamic, ego_dynamic, marker_dynamic };
 	public class ConfAvatar
 	{
@@ -286,7 +286,7 @@ public class ScenarioControl : MonoBehaviour
 									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
 									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
 								};
-	[HideInInspector] public Dictionary<int, GameObject> m_Vehs = new Dictionary<int, GameObject>();
+	[HideInInspector] public Dictionary<int, LocalVehBehavior> m_Vehs = new Dictionary<int, LocalVehBehavior>();
 	int s_vehId = 0;
 	// Use this for initialization
 	public void Initialize(bool isServer)
@@ -502,12 +502,15 @@ public class ScenarioControl : MonoBehaviour
 		adjustInspector(ScenarioControl.InspectorHelper.Direction.up, InspectorHelper.ObjType.Map);
 	}
 
-	public GameObject CreateLocalVeh(Vector3 pos, Quaternion rot, int id)
+	public LocalVehBehavior CreateLocalVeh(Vector3 pos, Quaternion rot, int id)
 	{
 		Debug.Assert(m_vehsPrefab.Length > 0);
 		Debug.Assert(0 == s_vehId);
-		Quaternion rot_2 = rot * c_qOffsetVeh; //the vehicle is not aligned for rotation, thus offset it for alignment
-		GameObject veh = Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length], pos, rot_2);
+
+		GameObject obj = Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length]);
+		var veh = obj.GetComponent<LocalVehBehavior>();
+		veh.position = pos;
+		veh.rotation = rot;
 		m_Vehs[id] = veh;
 		return veh;
 	}
@@ -516,20 +519,22 @@ public class ScenarioControl : MonoBehaviour
 	{
 		Debug.Assert(m_vehsPrefab.Length > 0);
 		int id = s_vehId ++;
-		Quaternion rot_2 = rot * c_qOffsetVeh; //the vehicle is not aligned for rotation, thus offset it for alignment
-		GameObject veh = Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length], pos, rot_2);
+		GameObject obj = Instantiate(m_vehsPrefab[id % m_vehsPrefab.Length]);
+		var veh = obj.GetComponent<LocalVehBehavior>();
+		veh.position = pos;
+		veh.rotation = rot;
 		m_Vehs[id] = veh;
 		return id;
 	}
 
 	public void DeleteLocalVeh(int id)
 	{
-		GameObject veh = null;
+		LocalVehBehavior veh = null;
 		bool find = m_Vehs.TryGetValue(id, out veh);
 		Debug.Assert(find);
 		if (find)
 		{
-			Destroy(veh);
+			Destroy(veh.gameObject);
 			m_Vehs.Remove(id);
 		}
 	}
@@ -542,7 +547,7 @@ public class ScenarioControl : MonoBehaviour
 		}
 		foreach (var element in m_Vehs)
 		{
-			Destroy(element.Value);
+			Destroy(element.Value.gameObject);
 		}
 	}
 }

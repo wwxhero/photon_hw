@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4861756526063054}
   - component: {fileID: 33627240118525742}
   - component: {fileID: 23380547632892704}
-  - component: {fileID: 95653909435487216}
+  - component: {fileID: 114094179432341504}
   m_Layer: 0
   m_Name: 02-Infiniti_FX
   m_TagString: Untagged
@@ -98,20 +98,14 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1447090857479216}
   m_Mesh: {fileID: 4300000, guid: 10f7510a07d7c3c4db5c983cc6c7a2ad, type: 3}
---- !u!95 &95653909435487216
-Animator:
-  serializedVersion: 3
+--- !u!114 &114094179432341504
+MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1447090857479216}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 10f7510a07d7c3c4db5c983cc6c7a2ad, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf01b9e2b10a79148a097cc63a37c187, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

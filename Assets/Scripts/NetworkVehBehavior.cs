@@ -5,7 +5,7 @@ using UnityEngine;
 public class NetworkVehBehavior : Bolt.EntityBehaviour<IVehState> {
 
 	const bool m_debug = true;
-	Transform m_tranLocal;
+	LocalVehBehavior m_localVeh;
 	ScenarioControl m_scenarioCtrl;
 	int m_id;
 	public int id
@@ -31,45 +31,44 @@ public class NetworkVehBehavior : Bolt.EntityBehaviour<IVehState> {
 		GameObject veh = null;
 		if (entity.IsOwner)
 		{
-			bool local_exists = m_scenarioCtrl.m_Vehs.TryGetValue(vid.id, out veh);
+			bool local_exists = m_scenarioCtrl.m_Vehs.TryGetValue(vid.id, out m_localVeh);
 			Debug.Assert(local_exists);
 		}
 		else
-			veh = m_scenarioCtrl.CreateLocalVeh(transform.position, transform.rotation, id);
+			m_localVeh = m_scenarioCtrl.CreateLocalVeh(transform.position, transform.rotation, id);
 
-		Debug.Assert(null != veh);
-		m_tranLocal = veh.transform;
+		
 	}
 
 	public override void Detached()
 	{
 		if (entity.IsOwner)
 		{
-			m_tranLocal = null;
+			m_localVeh = null;
 		}
 		else
 		{
 			m_scenarioCtrl.DeleteLocalVeh(id);
-			m_tranLocal = null;
+			m_localVeh = null;
 		}
 		base.Detached();
 	}
 
 	public Vector3 position
 	{
-		get { return m_tranLocal.position; }
-		set { m_tranLocal.position = value; }
+		get { return m_localVeh.position; }
+		set { m_localVeh.position = value; }
 	}
 
 	public Quaternion rotation
 	{
-		get { return m_tranLocal.rotation; }
-		set { m_tranLocal.rotation = value; }
+		get { return m_localVeh.rotation; }
+		set { m_localVeh.rotation = value; }
 	}
 
 	public GameObject localGameObject
 	{
-		get { return m_tranLocal.gameObject; }
+		get { return m_localVeh.gameObject; }
 	}
 
 	// Update is called once per frame
@@ -79,13 +78,13 @@ public class NetworkVehBehavior : Bolt.EntityBehaviour<IVehState> {
 		{
 			if (entity.IsOwner)
 			{
-				transform.position = m_tranLocal.position;
-				transform.rotation = m_tranLocal.rotation;
+				transform.position = m_localVeh.position;
+				transform.rotation = m_localVeh.rotation;
 			}
 			else
 			{
-				m_tranLocal.position = transform.position;
-				m_tranLocal.rotation = transform.rotation;
+				m_localVeh.position = transform.position;
+				m_localVeh.rotation = transform.rotation;
 			}
 		}
 	}
