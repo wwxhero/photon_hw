@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1447090857479216}
+  m_IsPrefabParent: 1
+--- !u!1 &1447090857479216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4861756526063054}
+  - component: {fileID: 33627240118525742}
+  - component: {fileID: 23380547632892704}
+  - component: {fileID: 95653909435487216}
+  m_Layer: 0
+  m_Name: 02-Infiniti_FX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4861756526063054
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1447090857479216}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23380547632892704
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1447090857479216}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 49f066fddd2524945809697fa723058d, type: 2}
+  - {fileID: 2100000, guid: 1eb6f80b9e0e9794e977d497e130b9c1, type: 2}
+  - {fileID: 2100000, guid: e3dff98d172ff59469b405cccac78394, type: 2}
+  - {fileID: 2100000, guid: e21f76729c31a934a8a27ca8cd0bd5f6, type: 2}
+  - {fileID: 2100000, guid: bf9e2a3f3916fab44a8bbc70557f2ef6, type: 2}
+  - {fileID: 2100000, guid: f361665205dd7ee47b3679fe59bcf2d8, type: 2}
+  - {fileID: 2100000, guid: 8f312cee432fc3349936b451478fcf02, type: 2}
+  - {fileID: 2100000, guid: 6174cbc1a864fe14ca1ca83dcd9f9e63, type: 2}
+  - {fileID: 2100000, guid: f225899b814ac5949898ce33007e3997, type: 2}
+  - {fileID: 2100000, guid: 120f30fa1dc47ab4a8c7edea26581e19, type: 2}
+  - {fileID: 2100000, guid: 49a7d9152aa535b45b353a69da441a01, type: 2}
+  - {fileID: 2100000, guid: 1276b7b69bd09ad469dd1be7f7e0c9d1, type: 2}
+  - {fileID: 2100000, guid: 883b3e8680f1833438a08177327c257f, type: 2}
+  - {fileID: 2100000, guid: 43a9fb1827d6e7742bb0ace4e6efb67e, type: 2}
+  - {fileID: 2100000, guid: de10e907547914740ab15575e4a5a18b, type: 2}
+  - {fileID: 2100000, guid: 0bdf7b49c90e6bc4287a3f94c016798a, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &33627240118525742
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1447090857479216}
+  m_Mesh: {fileID: 4300000, guid: 10f7510a07d7c3c4db5c983cc6c7a2ad, type: 3}
+--- !u!95 &95653909435487216
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1447090857479216}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 10f7510a07d7c3c4db5c983cc6c7a2ad, type: 3}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1

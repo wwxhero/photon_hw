@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -335,10 +335,12 @@ MonoBehaviour:
   m_logFiles:
   - Wanxin
   - Lakshimi
-  m_logTypes: 0000000000000000
+  - Vehi
+  m_logTypes: 000000000000000001000000
   m_prefabs:
   - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
   - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
+  - {fileID: 1878120623594376, guid: 569bea3efca4c744981162acf1a0d116, type: 2}
   c_nFrameBase: 2147483647
   c_nFrameMax: 0
   m_nFrame: 0

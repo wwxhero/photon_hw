@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1216595130855184}
+  m_IsPrefabParent: 1
+--- !u!1 &1216595130855184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4249573315097282}
+  - component: {fileID: 33717632015257112}
+  - component: {fileID: 23083384614275098}
+  - component: {fileID: 95015291854060740}
+  m_Layer: 0
+  m_Name: 04-VW_Jetta
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4249573315097282
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1216595130855184}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23083384614275098
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1216595130855184}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 787bc88997e266247b0f7b125c91b38d, type: 2}
+  - {fileID: 2100000, guid: 05b1553b641e3804085d0c234e0a9645, type: 2}
+  - {fileID: 2100000, guid: b074d910f791ce64880c3bc618e10e9c, type: 2}
+  - {fileID: 2100000, guid: d4545405b09c28240b9bdde56fbb0121, type: 2}
+  - {fileID: 2100000, guid: 7203b3edb3138ba4f9922b1236fa67f9, type: 2}
+  - {fileID: 2100000, guid: 6630df5ed0d9df74caf934e74fe8cf91, type: 2}
+  - {fileID: 2100000, guid: 4b4c3000f414d0e4a9cbec6a0a7bfcb6, type: 2}
+  - {fileID: 2100000, guid: dd93dcd3a9ba86340906c55ab1425340, type: 2}
+  - {fileID: 2100000, guid: a53cb97c491829c40bd65e7fdeaa0f58, type: 2}
+  - {fileID: 2100000, guid: 53663930d991fea4bb4e582329d93fbf, type: 2}
+  - {fileID: 2100000, guid: ed2cbf835ab70da4885408369e29bafc, type: 2}
+  - {fileID: 2100000, guid: 7f362b8d40d96a949a0dc6fcf4c7aa8e, type: 2}
+  - {fileID: 2100000, guid: e9a08aad7e49ef0419bf630e1b6c4889, type: 2}
+  - {fileID: 2100000, guid: cded5742ed9991140aec303699c65bd5, type: 2}
+  - {fileID: 2100000, guid: dfbc1363fee261d4f94b2048916c38c7, type: 2}
+  - {fileID: 2100000, guid: f9f4cff03cebef144bff2197e99d38a4, type: 2}
+  - {fileID: 2100000, guid: fcae0b25d63face4ca365e1c3abdb68f, type: 2}
+  - {fileID: 2100000, guid: 0412852fec4c629469f613e307243c77, type: 2}
+  - {fileID: 2100000, guid: 0bdf7b49c90e6bc4287a3f94c016798a, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &33717632015257112
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1216595130855184}
+  m_Mesh: {fileID: 4300000, guid: 01881f1fb37d2344baf6559ba62af0a1, type: 3}
+--- !u!95 &95015291854060740
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1216595130855184}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 01881f1fb37d2344baf6559ba62af0a1, type: 3}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1

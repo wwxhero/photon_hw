@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1429864148854168}
+  m_IsPrefabParent: 1
+--- !u!1 &1429864148854168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4974699379123828}
+  - component: {fileID: 33660875727222414}
+  - component: {fileID: 23433985079377346}
+  - component: {fileID: 95420477474090236}
+  m_Layer: 0
+  m_Name: 03-Audi_s5_Sportback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4974699379123828
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1429864148854168}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23433985079377346
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1429864148854168}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: e55062d6f38360248bd108dd10496726, type: 2}
+  - {fileID: 2100000, guid: db4be56870c45d749b2fa5cf454dc5ce, type: 2}
+  - {fileID: 2100000, guid: 22b5bc75e71e08b4294f5841d09bd6cc, type: 2}
+  - {fileID: 2100000, guid: 1e3f63431d88f744984c686a2cd8d99b, type: 2}
+  - {fileID: 2100000, guid: 24edd2e2d99520546a522465589d87c6, type: 2}
+  - {fileID: 2100000, guid: 6a0345c25ddc0a14b804232e89097e89, type: 2}
+  - {fileID: 2100000, guid: a7a1e828e7836be40830ea43e6832ec1, type: 2}
+  - {fileID: 2100000, guid: 0e68458ff4309a44db8b73ac14b8d781, type: 2}
+  - {fileID: 2100000, guid: fb13162ed1fb209448d14436edb4e8f8, type: 2}
+  - {fileID: 2100000, guid: 10cb47c6fe2831340bbbe0081f81d971, type: 2}
+  - {fileID: 2100000, guid: a378ab63db7539342b4d366996045413, type: 2}
+  - {fileID: 2100000, guid: 236aa75db334b4f4ab8faf2fb8931c3e, type: 2}
+  - {fileID: 2100000, guid: 9a37683c420b5ae4db78368cdfd9d3ae, type: 2}
+  - {fileID: 2100000, guid: e0c4a07f92e83cd4a9e7316902901c0e, type: 2}
+  - {fileID: 2100000, guid: 0bdf7b49c90e6bc4287a3f94c016798a, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &33660875727222414
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1429864148854168}
+  m_Mesh: {fileID: 4300000, guid: 4fce2a8affe1a0947ae032fc7ffa3026, type: 3}
+--- !u!95 &95420477474090236
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1429864148854168}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 4fce2a8affe1a0947ae032fc7ffa3026, type: 3}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
