@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using Bolt.Samples.GettingStarted;
 using Veh = System.Collections.Generic.KeyValuePair<int, UnityEngine.GameObject>;
+using VehiControl = LoggerVeh;
 
 public class ScenarioControl : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class ScenarioControl : MonoBehaviour
 	public GameObject m_pedPrefab;
 	public GameObject m_camInspectorPrefab;
 	public GameObject m_mockTrackersPrefab;
+	public VehiControl m_vehiControlSrv;
+	public VehiControl m_vehiControlCli;
 	GameObject m_trackers;
 	Camera m_egoInspector;
 
@@ -274,7 +277,6 @@ public class ScenarioControl : MonoBehaviour
 	ConfMap m_confMap;
 	bool m_debug = true;
 	bool m_mockIp = true;
-	bool m_mockVeh = true;
 	[HideInInspector] public GameObject m_ownPed;
 	[HideInInspector] public int m_ownPedId;
 	[HideInInspector] public Dictionary<int, GameObject> m_Peds = new Dictionary<int, GameObject>();
@@ -445,7 +447,12 @@ public class ScenarioControl : MonoBehaviour
 		if (m_debug)
 			m_confAvatar.DbgLog();
 
-		transform.Find("MockVehControl").gameObject.SetActive(isServer && m_mockVeh);
+		m_vehiControlSrv.gameObject.SetActive(isServer);
+		m_vehiControlCli.gameObject.SetActive(!isServer);
+		if (isServer)
+			m_vehiControlSrv.Initialize(this);
+		else
+			m_vehiControlCli.Initialize(this);
 	}
 
 
@@ -511,6 +518,7 @@ public class ScenarioControl : MonoBehaviour
 		var veh = obj.GetComponent<LocalVehBehavior>();
 		veh.position = pos;
 		veh.rotation = rot;
+		veh.id = id;
 		m_Vehs[id] = veh;
 		return veh;
 	}
@@ -523,6 +531,7 @@ public class ScenarioControl : MonoBehaviour
 		var veh = obj.GetComponent<LocalVehBehavior>();
 		veh.position = pos;
 		veh.rotation = rot;
+		veh.id = id;
 		m_Vehs[id] = veh;
 		return id;
 	}

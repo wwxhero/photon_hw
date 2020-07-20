@@ -186,7 +186,6 @@ public class SteamVR_Manager : SteamVR_TDManager
 			{
 				Exception e = new Exception("Please turn one and only one tracker on!!!");
 				throw e;
-				return false;
 			}
 			else
 			{
@@ -207,7 +206,6 @@ public class SteamVR_Manager : SteamVR_TDManager
 			return g_inst.m_trackersIdentified = g_inst.IdentifyTrackers();
 	}
 
-	static int s_idx = 0;
 	protected static bool actTeleportP(uint cond)
 	{
 		if (g_inst.DEF_MOCKSTEAM)
@@ -330,35 +328,6 @@ public class SteamVR_Manager : SteamVR_TDManager
 		}
 	}
 
-	protected static bool actAdjustAvatar(uint cond)
-	{
-		if (g_inst.DEF_MOCKSTEAM)
-		{
-			Debug.LogWarning("SteamVR_Manager::actAdjustAvatar");
-			return true;
-		}
-		else
-		{
-			bool minus = (cond == L_MENU);
-			bool plus = (cond == R_MENU);
-			bool acted = (minus
-						|| plus);
-			float dh = 0;
-			if (minus)
-				dh = -0.001f;
-			else if (plus)
-				dh = 0.001f;
-			if (acted)
-			{
-				Debug.Assert(g_inst.m_senarioCtrl);
-                //float s = g_inst.m_senarioCtrl.GetComponent<ScenarioControl>().adjustAvatar(dh);
-                float s = 1;
-				g_inst.adjustAvatar_s(s);
-                Debug.Assert(false); //todo: this function should be removed
-			}
-			return acted;
-		}
-	}
 
 	private	void adjustAvatar_s(float s)
 	{

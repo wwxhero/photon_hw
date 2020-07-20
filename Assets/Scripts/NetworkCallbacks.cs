@@ -162,15 +162,5 @@ namespace Bolt.Samples.GettingStarted
 					);
 		}
 
-		public override void BoltShutdownBegin(AddCallback registerDoneCallback, UdpConnectionDisconnectReason disconnectReason)
-		{
-			foreach (var entity in BoltNetwork.Entities)
-            {
-                BoltNetwork.Destroy(entity.gameObject);
-            }
-            base.BoltShutdownBegin(registerDoneCallback, disconnectReason);           
-        }
-
-
 	}
 }

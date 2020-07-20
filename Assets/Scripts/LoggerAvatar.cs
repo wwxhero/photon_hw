@@ -38,7 +38,7 @@ public class LoggerAvatar : LoggerObj {
 		LogOutInPack(strHeader);
 	}
 
-	void Update()
+    public override void OnLogging()
 	{
 		bool initialized = (null != m_logger);
 		if (!initialized)

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Bolt.Samples.GettingStarted;
+using VehiControl = LoggerVeh;
 
-
-public class MockVehControl : MonoBehaviour {
+public class MockVehControl : VehiControl {
 	public float c_speedInKPH = 20;
 	float c_speedInMPS = 0;
 	Vector3 c_velInMPS = Vector3.zero;
@@ -27,13 +27,13 @@ public class MockVehControl : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate()  {
 		int i_removed = m_vehi.Count; //[i_removed, m_vehi.Count) will be removed
 		int n_removed = 0;
 		for (int i_veh = m_vehi.Count - 1; i_veh > -1 ; i_veh --)
 		{
-			m_vehi[i_veh].position += c_velInMPS * Time.deltaTime;
-			m_sLen[i_veh] += c_speedInMPS * Time.deltaTime;
+			m_vehi[i_veh].position += c_velInMPS * Time.fixedDeltaTime;
+			m_sLen[i_veh] += c_speedInMPS * Time.fixedDeltaTime;
 			if (m_sLen[i_veh] > c_routeLen)
 			{
 				i_removed --;

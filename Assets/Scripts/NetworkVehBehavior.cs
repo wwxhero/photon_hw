@@ -28,7 +28,7 @@ public class NetworkVehBehavior : Bolt.EntityBehaviour<IVehState> {
 		if (m_debug)
 			DebugLog.InfoFormat("veh binding start:({0})", vid.id);
 		m_id = vid.id;
-		GameObject veh = null;
+
 		if (entity.IsOwner)
 		{
 			bool local_exists = m_scenarioCtrl.m_Vehs.TryGetValue(vid.id, out m_localVeh);

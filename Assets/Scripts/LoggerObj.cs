@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoggerObj : MonoBehaviour {
+public abstract class LoggerObj : MonoBehaviour {
 	protected readonly int c_logPackCap = 512;
 	protected loggerSrvLib.Logger m_logger;
 
@@ -29,5 +29,14 @@ public class LoggerObj : MonoBehaviour {
 			string item_i = item.Substring(i, Mathf.Min(n-i, L));
 			m_logger.LogOut(item_i);
 		}
+	}
+
+	public abstract void OnLogging();
+
+	void LateUpdate()
+	{
+		//bool even_frm = (0 == (Time.frameCount & 0x01));
+		//if (even_frm)
+			OnLogging();
 	}
 }

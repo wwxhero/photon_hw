@@ -59,4 +59,11 @@ public class LoggerAvatar_s : LoggerObj {
 		strItem += "\n";
 		LogOutInPack(strItem);
 	}
+
+    public override void OnLogging()
+	{
+		//do nothing for scaling information
+		//, scaling logging happens only on occations
+		//, rather than per-frame
+	}
 }
