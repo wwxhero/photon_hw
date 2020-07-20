@@ -309,13 +309,14 @@ public class LogItem
 				int id = m_nId;
 				Parse4Ped(name, records);
 				id2name[id] = name;
+				m_nId ++;
+
 				int nFrameBase_prime = (records[0])[id].nFrame;
-				int nFrameMax_prime = (records[records.Count-1])[id].nFrame;
+				int nFrameMax_prime = (records[0])[id].nFrame + records.Count;
 				if (nFrameBase > nFrameBase_prime)
 					nFrameBase = nFrameBase_prime;
 				if (nFrameMax < nFrameMax_prime)
 					nFrameMax = nFrameMax_prime;
-				m_nId ++;
 				break;
 			}
 			case LogType.veh:
