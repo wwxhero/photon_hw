@@ -8,7 +8,7 @@ using Id2GO = System.Collections.Generic.Dictionary<int, LogGO>;
 public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
-	public GameObject [] m_prefabs;
+	public GameObject [] m_prefabs = new GameObject[(int)LogItem.LogType.total];
 	[HideInInspector] public int c_nFrameBase = int.MaxValue;
 	[HideInInspector] public int c_nFrameMax = 0;
 	[HideInInspector] public int m_nFrame = 0;
@@ -55,7 +55,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 
 	void CreateObject(LogItem item)
 	{
-		GameObject obj = Instantiate(m_prefabs[item.id], item.transforms[0].pos, item.transforms[0].ori);
+		GameObject obj = Instantiate(m_prefabs[(int)item.type], item.transforms[0].pos, item.transforms[0].ori);
 		string name = null;
 		if (m_id2names.TryGetValue(item.id, out name))
 			obj.name = name;

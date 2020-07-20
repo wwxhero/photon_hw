@@ -5,8 +5,8 @@ using UnityEngine;
 public class LocalVehBehavior : MonoBehaviour {
 
     // Use this for initialization
-    Quaternion c_qOffsetVeh = new Quaternion(Mathf.Sin(-Mathf.PI / 4), 0, 0, Mathf.Cos(-Mathf.PI / 4));
-    Quaternion c_qOffsetVehInv = new Quaternion(Mathf.Sin(Mathf.PI / 4), 0, 0, Mathf.Cos(Mathf.PI / 4));
+    readonly Quaternion c_qOffsetVeh = new Quaternion(Mathf.Sin(-Mathf.PI / 4), 0, 0, Mathf.Cos(-Mathf.PI / 4));
+    readonly Quaternion c_qOffsetVehInv = new Quaternion(Mathf.Sin(Mathf.PI / 4), 0, 0, Mathf.Cos(Mathf.PI / 4));
     int m_id = -1;
 
     public Vector3 position

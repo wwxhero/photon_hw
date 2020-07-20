@@ -17,13 +17,13 @@ public struct Transform_log
 public class LogItem
 {
 	public int id;
-	public enum LogType {ped, veh};
+	public enum LogType {ped = 0, veh, total};
 	public LogType type;
 	public int nFrame;
 	public double ticks; //in millisecond
 	public Transform_log [] transforms;
 	static bool c_debug = false;
-	static int s_idStatic = 0;
+	static int m_nId = 0;
 	static readonly string c_filesuffix = ".csv";
 	public delegate bool ParseRowTransform(BufferedStream buff, Transform_log[] transforms, int n_trans);
 
@@ -153,15 +153,44 @@ public class LogItem
 		return valid_parse; //todo: parse an array of transforms from buf
 	}
 
-	static void Parse4Veh(string path, List<Id2Item> records)
+	static bool ParseRow4Veh(BufferedStream buff, Transform_log[] transforms, int n_trans)
 	{
-		Debug.Assert(false);
+		Debug.Assert(1 == n_trans);
+		bool valid_parse = true;
+		float [] v = new float[7];
+
+		for (int i = 0
+			; i < 7
+			&& valid_parse
+			; i ++)
+		{
+			string field;
+			NextField(buff, out field);
+			valid_parse = float.TryParse(field, out v[i]);
+		}
+		transforms[0].ori.w = v[0];
+		transforms[0].ori.x = v[1];
+		transforms[0].ori.y = v[2];
+		transforms[0].ori.z = v[3];
+		transforms[0].pos.x = v[4];
+		transforms[0].pos.y = v[5];
+		transforms[0].pos.z = v[6];
+		transforms[0].scl.x = 1;
+		transforms[0].scl.y = 1;
+		transforms[0].scl.z = 1;
+
+		return valid_parse; //todo: parse an array of transforms from buf
 	}
 
-	static void ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records)
+	static int Parse4Veh(string name, List<Id2Item> records)
 	{
-		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
+		string path = name + c_filesuffix;
+		return ParseTable(path, ParseRow4Veh, records, 1, true);
+		//each vehicle has an id, vehicles are aggregated in this log file
+	}
 
+	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int n_joints, bool aggregated_entities)
+	{
 		List<LogItem> rawRecords = new List<LogItem>();
 
 		FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -173,14 +202,18 @@ public class LogItem
 
 		int nFrame = 0;
 		double ticks = 0;
+		int id_base = m_nId;
 		Transform_log [] transforms = null;
 
 		int nItem = 0;
+
 		while (read)
 		{
 			transforms = new Transform_log[n_joints];
+			int id_offset = 0;
 			read = ParseDouble(buffer, out ticks)
 				&& ParseInt(buffer, out nFrame)
+				&& (!aggregated_entities || ParseInt(buffer, out id_offset))
 				&& parser_row_trans(buffer, transforms, n_joints);
 			if (read)
 			{
@@ -198,7 +231,7 @@ public class LogItem
 					DebugLog.InfoFormat(strItem);
 				}
 				LogItem item = new LogItem {
-										  id = s_idStatic
+										  id = id_base + id_offset
 										, type = LogType.ped
 										, nFrame = nFrame
 										, ticks = ticks
@@ -216,6 +249,7 @@ public class LogItem
 			}
 			nItem ++;
 		}
+		return nItem;
 	}
 
 	static void Parse4Ped(string name, List<Id2Item> records)
@@ -224,14 +258,15 @@ public class LogItem
 		List<Id2Item> records_S = new List<Id2Item>();
 		string path_rt = name + c_filesuffix;
 		string path_s = name + "_s" + c_filesuffix;
-		ParseTable(path_rt, ParseRow4Ped_rt, records_RT);
+		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
+		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, n_joints, false);
 		if (File.Exists(path_s))
 		{
-            ParseTable(path_s, ParseRow4Ped_s, records_S);
+			ParseTable(path_s, ParseRow4Ped_s, records_S, n_joints, false);
 			Id2Item id2Item = new Id2Item();
 			records_S.Add(id2Item);
-			id2Item[s_idStatic] = new LogItem{
-									  id = s_idStatic
+			id2Item[m_nId] = new LogItem{
+									  id = m_nId
 									, type = LogType.ped
 									, nFrame = int.MaxValue
 									, ticks = int.MaxValue
@@ -242,16 +277,16 @@ public class LogItem
 			while (i_RT < records_RT.Count
 				&& i_S < records_S.Count - 1)
 			{
-				int n_l_s = (records_S[i_S])[s_idStatic].nFrame;
-				int n_r_s = (records_S[i_S + 1])[s_idStatic].nFrame;
-				int n_rt = (records_RT[i_RT])[s_idStatic].nFrame;
+				int n_l_s = (records_S[i_S])[m_nId].nFrame;
+				int n_r_s = (records_S[i_S + 1])[m_nId].nFrame;
+				int n_rt = (records_RT[i_RT])[m_nId].nFrame;
 				if (n_r_s <= n_rt) //n_r_s <= n_rt
 					i_S ++;
-				Debug.Assert((n_rt = (records_RT[i_RT])[s_idStatic].nFrame) < (n_r_s = (records_S[i_S + 1])[s_idStatic].nFrame)
-							&& (n_l_s = (records_S[i_S])[s_idStatic].nFrame) <= (n_rt = (records_RT[i_RT])[s_idStatic].nFrame));
-				Transform_log [] trans_dst = (records[i_RT])[s_idStatic].transforms;
-				Transform_log [] trans_src_rt = (records_RT[i_RT])[s_idStatic].transforms;
-				Transform_log [] trans_src_s = (records_S[i_S])[s_idStatic].transforms;
+				Debug.Assert((n_rt = (records_RT[i_RT])[m_nId].nFrame) < (n_r_s = (records_S[i_S + 1])[m_nId].nFrame)
+							&& (n_l_s = (records_S[i_S])[m_nId].nFrame) <= (n_rt = (records_RT[i_RT])[m_nId].nFrame));
+				Transform_log [] trans_dst = (records[i_RT])[m_nId].transforms;
+				Transform_log [] trans_src_rt = (records_RT[i_RT])[m_nId].transforms;
+				Transform_log [] trans_src_s = (records_S[i_S])[m_nId].transforms;
 				Debug.Assert(trans_dst.Length == trans_src_s.Length
 							&& trans_dst.Length == trans_src_rt.Length);
 				for (int i_tran = 0; i_tran < trans_dst.Length; i_tran ++)
@@ -263,8 +298,6 @@ public class LogItem
 				i_RT ++;
 			}
 		}
-		s_idStatic ++;
-
 	}
 
 	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name, ref int nFrameBase, ref int nFrameMax)
@@ -273,7 +306,7 @@ public class LogItem
 		{
 			case LogType.ped:
 			{
-				int id = s_idStatic;
+				int id = m_nId;
 				Parse4Ped(name, records);
 				id2name[id] = name;
 				int nFrameBase_prime = (records[0])[id].nFrame;
@@ -282,11 +315,12 @@ public class LogItem
 					nFrameBase = nFrameBase_prime;
 				if (nFrameMax < nFrameMax_prime)
 					nFrameMax = nFrameMax_prime;
+				m_nId ++;
 				break;
 			}
 			case LogType.veh:
 			{
-				Parse4Veh(name, records);
+				m_nId += Parse4Veh(name, records);
 				break;
 			}
 		}
