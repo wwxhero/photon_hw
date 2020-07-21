@@ -9,6 +9,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
 	public GameObject [] m_prefabs = new GameObject[(int)LogItem.LogType.total];
+	public bool m_debug = true;
 	[HideInInspector] public int c_nFrameBase = int.MaxValue;
 	[HideInInspector] public int c_nFrameMax = 0;
 	[HideInInspector] public int m_nFrame = 0;
@@ -23,7 +24,13 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	void Start () {
 		Debug.Assert(m_logFiles.Length == m_logTypes.Length);
 		for (int log_i = 0; log_i < m_logFiles.Length; log_i ++)
-			LogItem.Parse(m_logTypes[log_i], m_logFiles[log_i], m_records, m_id2names, ref c_nFrameBase, ref c_nFrameMax);
+			LogItem.Parse(m_logTypes[log_i]
+						, m_logFiles[log_i]
+						, m_records
+						, m_id2names
+						, ref c_nFrameBase
+						, ref c_nFrameMax
+						, m_debug);
 
 		m_nFrame = c_nFrameBase;
 	}

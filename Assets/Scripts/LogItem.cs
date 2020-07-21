@@ -185,11 +185,11 @@ public class LogItem
 	static int Parse4Veh(string name, List<Id2Item> records)
 	{
 		string path = name + c_filesuffix;
-		return ParseTable(path, ParseRow4Veh, records, 1, true);
+		return ParseTable(path, ParseRow4Veh, records, 1, true, LogType.veh);
 		//each vehicle has an id, vehicles are aggregated in this log file
 	}
 
-	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int n_joints, bool aggregated_entities)
+	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int n_joints, bool aggregated_entities, LogType type)
 	{
 		List<LogItem> rawRecords = new List<LogItem>();
 
@@ -232,7 +232,7 @@ public class LogItem
 				}
 				LogItem item = new LogItem {
 										  id = id_base + id_offset
-										, type = LogType.ped
+										, type = type
 										, nFrame = nFrame
 										, ticks = ticks
 										, transforms = transforms
@@ -259,10 +259,10 @@ public class LogItem
 		string path_rt = name + c_filesuffix;
 		string path_s = name + "_s" + c_filesuffix;
 		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
-		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, n_joints, false);
+		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, n_joints, false, LogType.ped);
 		if (File.Exists(path_s))
 		{
-			ParseTable(path_s, ParseRow4Ped_s, records_S, n_joints, false);
+			ParseTable(path_s, ParseRow4Ped_s, records_S, n_joints, false, LogType.ped);
 			Id2Item id2Item = new Id2Item();
 			records_S.Add(id2Item);
 			id2Item[m_nId] = new LogItem{
@@ -300,31 +300,120 @@ public class LogItem
 		}
 	}
 
-	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name, ref int nFrameBase, ref int nFrameMax)
+	static int N_Frame(Id2Item id2item)
 	{
+		Debug.Assert(id2item.Count > 0);
+		foreach (var id_item in id2item)
+			return id_item.Value.nFrame;
+        return -1;
+	}
+
+	static void JointRecord(List<Id2Item> records, List<Id2Item> records_prime)
+	{
+		int i_rc = 0;
+		int i_rc_prime = 0;
+		int n_frame = N_Frame(records[0]);
+		int n_frame_prime = 0;
+		for (
+			; i_rc_prime < records_prime.Count
+			 && n_frame > (n_frame_prime = N_Frame(records_prime[i_rc_prime]))
+			; i_rc_prime ++)
+		{
+			Id2Item record_prime = records_prime[i_rc_prime];
+			records.Insert(i_rc_prime, record_prime);
+		}
+
+		while (i_rc < records.Count
+			   && i_rc_prime < records_prime.Count)
+		{
+			Id2Item record = records[i_rc];
+			Id2Item record_prime = records_prime[i_rc_prime];
+			if (n_frame == n_frame_prime)
+			{
+				foreach (var id2item_prime in record_prime)
+				{
+					record[id2item_prime.Key] = id2item_prime.Value;
+				}
+				i_rc ++;
+				if (i_rc < records.Count)
+					n_frame = N_Frame(records[i_rc]);
+				i_rc_prime ++;
+				if (i_rc_prime < records_prime.Count)
+					n_frame_prime = N_Frame(records_prime[i_rc_prime]);
+			}
+			else if (n_frame < n_frame_prime)
+			{
+				i_rc ++;
+				if (i_rc < records.Count)
+					n_frame = N_Frame(records[i_rc]);
+			}
+			else
+			{
+				i_rc_prime ++;
+				if (i_rc_prime < records_prime.Count)
+					n_frame_prime = N_Frame(records_prime[i_rc_prime]);
+			}
+		}
+
+		while (i_rc_prime < records_prime.Count)
+		{
+			Id2Item record_prime = records_prime[i_rc_prime];
+			records.Add(record_prime);
+			i_rc_prime++;
+		}
+	}
+
+	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name, ref int nFrameBase, ref int nFrameMax, bool debug = false)
+	{
+		int n_records = records.Count;
+		List<Id2Item> records_prime = (n_records > 0)
+										? new List<Id2Item>()
+										: records;
 		switch(type)
 		{
 			case LogType.ped:
 			{
 				int id = m_nId;
-				Parse4Ped(name, records);
+				Parse4Ped(name, records_prime);
 				id2name[id] = name;
 				m_nId ++;
-
-				int nFrameBase_prime = (records[0])[id].nFrame;
-				int nFrameMax_prime = (records[0])[id].nFrame + records.Count;
-				if (nFrameBase > nFrameBase_prime)
-					nFrameBase = nFrameBase_prime;
-				if (nFrameMax < nFrameMax_prime)
-					nFrameMax = nFrameMax_prime;
 				break;
 			}
 			case LogType.veh:
 			{
-				m_nId += Parse4Veh(name, records);
+				m_nId += Parse4Veh(name, records_prime);
 				break;
 			}
 		}
+
+		if (records != records_prime)
+			JointRecord(records, records_prime);
+
+		if (debug)
+		{
+			for (int i_rc = 0; i_rc < records.Count; i_rc ++)
+			{
+				int nFrame = -1;
+				foreach (var id2item in records[i_rc])
+				{
+					if (nFrame < 0)
+					{
+						nFrame = id2item.Value.nFrame;
+					}
+					else
+					{
+						Debug.Assert(nFrame == id2item.Value.nFrame);
+					}
+				}
+			}
+		}
+
+		int nFrameBase_prime = N_Frame(records[0]);
+		int nFrameMax_prime = records.Count - 1 + nFrameBase_prime;
+		if (nFrameBase > nFrameBase_prime)
+			nFrameBase = nFrameBase_prime;
+		if (nFrameMax < nFrameMax_prime)
+			nFrameMax = nFrameMax_prime;
 	}
 };
 

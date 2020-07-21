@@ -335,7 +335,7 @@ MonoBehaviour:
   m_logFiles:
   - Wanxin
   - Lakshimi
-  - Vehi
+  - vehi
   m_logTypes: 000000000000000001000000
   m_prefabs:
   - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
