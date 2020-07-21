@@ -31,12 +31,19 @@ public abstract class LoggerObj : MonoBehaviour {
 		}
 	}
 
-	public abstract void OnLogging();
+	public abstract void OnLogging(bool delayed);
 
 	void LateUpdate()
 	{
 		//bool even_frm = (0 == (Time.frameCount & 0x01));
 		//if (even_frm)
-			OnLogging();
+			OnLogging(true);
+	}
+
+	void Update()
+	{
+		//bool even_frm = (0 == (Time.frameCount & 0x01));
+		//if (even_frm)
+			OnLogging(false);
 	}
 }

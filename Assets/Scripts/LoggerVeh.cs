@@ -18,9 +18,10 @@ public class LoggerVeh : LoggerObj {
 		m_refVehs = ctrl.m_Vehs;
 	}
 
-	public override void OnLogging()
+	public override void OnLogging(bool delayed)
 	{
-        if (null == m_refVehs) //not intialized
+        if (null == m_refVehs
+            || !delayed) //not intialized
             return;
         string strLog = "";
 		foreach (var reg_v in m_refVehs)

@@ -60,7 +60,7 @@ public class LoggerAvatar_s : LoggerObj {
 		LogOutInPack(strItem);
 	}
 
-    public override void OnLogging()
+    public override void OnLogging(bool delayed)
 	{
 		//do nothing for scaling information
 		//, scaling logging happens only on occations

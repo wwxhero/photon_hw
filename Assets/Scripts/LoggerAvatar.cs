@@ -38,10 +38,11 @@ public class LoggerAvatar : LoggerObj {
 		LogOutInPack(strHeader);
 	}
 
-    public override void OnLogging()
+    public override void OnLogging(bool delayed)
 	{
 		bool initialized = (null != m_logger);
-		if (!initialized)
+		if (!initialized
+			|| delayed)
 			return;
 		Quaternion q;
 		Vector3 t;
