@@ -185,11 +185,11 @@ public class LogItem
 	static int Parse4Veh(string name, List<Id2Item> records)
 	{
 		string path = name + c_filesuffix;
-		return ParseTable(path, ParseRow4Veh, records, 1, true, LogType.veh);
+		return ParseTable(path, ParseRow4Veh, records, 7, true, LogType.veh);
 		//each vehicle has an id, vehicles are aggregated in this log file
 	}
 
-	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int n_joints, bool aggregated_entities, LogType type)
+	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int u_joint, bool aggregated_entities, LogType type)
 	{
 		List<LogItem> rawRecords = new List<LogItem>();
 
@@ -199,6 +199,32 @@ public class LogItem
 		bool read = NextLine(buffer, ref strLine);
 		Debug.Assert(read);
 		DebugLog.InfoFormat("Header: {0}", strLine);
+
+		int n_fields = 0;
+		int i_start = 0;
+		int n_cnt = strLine.Length;
+		while (n_cnt > 0)
+		{
+			int i = strLine.IndexOf(',', i_start, n_cnt);
+			if (i > 0)
+			{
+				int i_start_prime = i + 1;
+				int n_skip = i_start_prime - i_start;
+				n_cnt = n_cnt - n_skip;
+				i_start = i_start_prime;
+			}
+			else
+			{
+				n_cnt = 0;
+			}
+			n_fields ++;
+		}
+
+		int n_joints_u = aggregated_entities ?
+								  n_fields - 3
+								: n_fields - 2;
+		int n_joints = n_joints_u / u_joint;
+		Debug.Assert(n_joints_u == n_joints * u_joint);
 
 		int nFrame = 0;
 		double ticks = 0;
@@ -258,11 +284,10 @@ public class LogItem
 		List<Id2Item> records_S = new List<Id2Item>();
 		string path_rt = name + c_filesuffix;
 		string path_s = name + "_s" + c_filesuffix;
-		int n_joints = ScenarioControl.s_lstNetworkingJoints.Length + 1; //+1 for entity
-		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, n_joints, false, LogType.ped);
+		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, 7, false, LogType.ped);
 		if (File.Exists(path_s))
 		{
-			ParseTable(path_s, ParseRow4Ped_s, records_S, n_joints, false, LogType.ped);
+			ParseTable(path_s, ParseRow4Ped_s, records_S, 3, false, LogType.ped);
 			Id2Item id2Item = new Id2Item();
 			records_S.Add(id2Item);
 			id2Item[m_nId] = new LogItem{
