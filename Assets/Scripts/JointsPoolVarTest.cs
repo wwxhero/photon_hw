@@ -62,7 +62,7 @@ public class JointsPoolVarTest : JointsPool
 		List<Transform> varJoints = new List<Transform>();
 		foreach (Transform2 t2 in m_joints0)
 		{
-			if (t2.Changed())
+			if (t2.Changed() && transform != t2.target) //the entity by default is counted as a variable joint
 				varJoints.Add(t2.target);
 		}
 		return varJoints;
