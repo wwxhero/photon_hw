@@ -185,11 +185,12 @@ public class LogItem
 	static int Parse4Veh(string name, List<Id2Item> records)
 	{
 		string path = name + c_filesuffix;
-		return ParseTable(path, ParseRow4Veh, records, 7, true, LogType.veh);
+        string[] dummy = null;
+        return ParseTable(path, ParseRow4Veh, records, 7, true, LogType.veh, ref dummy);
 		//each vehicle has an id, vehicles are aggregated in this log file
 	}
 
-	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int u_joint, bool aggregated_entities, LogType type)
+	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int u_joint, bool aggregated_entities, LogType type, ref string[] joint_names)
 	{
 		List<LogItem> rawRecords = new List<LogItem>();
 
@@ -203,13 +204,19 @@ public class LogItem
 		int n_fields = 0;
 		int i_start = 0;
 		int n_cnt = strLine.Length;
+		int n_skip_fields = aggregated_entities ? 3 : 2;
+
+		bool retrive_joint_names = (null != joint_names);
+		List<string> joint_names_2 = retrive_joint_names ? new List<string>() : null;
 		while (n_cnt > 0)
 		{
+			int i_start_m = i_start;
 			int i = strLine.IndexOf(',', i_start, n_cnt);
+			int n_skip = 0;
 			if (i > 0)
 			{
 				int i_start_prime = i + 1;
-				int n_skip = i_start_prime - i_start;
+				n_skip = i_start_prime - i_start;
 				n_cnt = n_cnt - n_skip;
 				i_start = i_start_prime;
 			}
@@ -217,12 +224,23 @@ public class LogItem
 			{
 				n_cnt = 0;
 			}
+
+			if (retrive_joint_names
+				&& (n_skip_fields < n_fields)
+				&& 0 == ((n_fields - n_skip_fields) % u_joint))
+			{
+				int i_dot = strLine.LastIndexOf('.', i_start, n_skip);
+                string name = strLine.Substring(i_start_m, i_dot - i_start_m);
+                joint_names_2.Add(name.Trim());
+			}
+
 			n_fields ++;
 		}
 
-		int n_joints_u = aggregated_entities ?
-								  n_fields - 3
-								: n_fields - 2;
+        if (retrive_joint_names)
+            joint_names = joint_names_2.ToArray();
+
+		int n_joints_u = n_fields - n_skip_fields;
 		int n_joints = n_joints_u / u_joint;
 		Debug.Assert(n_joints_u == n_joints * u_joint);
 
@@ -278,16 +296,17 @@ public class LogItem
 		return nItem;
 	}
 
-	static void Parse4Ped(string name, List<Id2Item> records)
+	static void Parse4Ped(string name, List<Id2Item> records, ref string[] joint_names)
 	{
 		List<Id2Item> records_RT = records;
 		List<Id2Item> records_S = new List<Id2Item>();
 		string path_rt = name + c_filesuffix;
 		string path_s = name + "_s" + c_filesuffix;
-		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, 7, false, LogType.ped);
+		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, 7, false, LogType.ped, ref joint_names);
 		if (File.Exists(path_s))
 		{
-			ParseTable(path_s, ParseRow4Ped_s, records_S, 3, false, LogType.ped);
+            string[] dummy = null;
+            ParseTable(path_s, ParseRow4Ped_s, records_S, 3, false, LogType.ped, ref dummy);
 			Id2Item id2Item = new Id2Item();
 			records_S.Add(id2Item);
 			id2Item[m_nId] = new LogItem{
@@ -388,7 +407,14 @@ public class LogItem
 		}
 	}
 
-	public static void Parse(LogType type, string name, List<Id2Item> records, Id2Name id2name, ref int nFrameBase, ref int nFrameMax, bool debug = false)
+	public static void Parse(LogType type
+							, string name
+							, List<Id2Item> records
+							, Id2Name id2name
+							, ref string[] joint_names
+							, ref int nFrameBase
+							, ref int nFrameMax
+							, bool debug = false)
 	{
 		int n_records = records.Count;
 		List<Id2Item> records_prime = (n_records > 0)
@@ -399,7 +425,7 @@ public class LogItem
 			case LogType.ped:
 			{
 				int id = m_nId;
-				Parse4Ped(name, records_prime);
+				Parse4Ped(name, records_prime, ref joint_names);
 				id2name[id] = name;
 				m_nId ++;
 				break;

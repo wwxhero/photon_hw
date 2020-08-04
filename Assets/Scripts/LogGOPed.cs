@@ -7,14 +7,15 @@ public class LogGOPed : LogGO {
 	Transform [] m_joints;
 	public void Initialize()
 	{
-		HashSet<string> names = new HashSet<string>(ScenarioControl.s_lstNetworkingJoints);
-		m_joints = new Transform[ScenarioControl.s_lstNetworkingJoints.Length + 1];
+		HashSet<string> names = new HashSet<string>(ScenarioControl_LogPlayBack.s_lstNetworkingJoints);
+		m_joints = new Transform[ScenarioControl_LogPlayBack.s_lstNetworkingJoints.Length + 1];
 		int i_joint = 0;
 		m_joints[i_joint] = transform;
 		i_joint ++;
 		JointsPool.Traverse_d(transform
 			, (Transform this_t) => {
-					if (names.Contains(this_t.name))
+                    string name = this_t.name.Trim();
+					if (names.Contains(name))
 					{
 						m_joints[i_joint ++] = this_t;
 					}

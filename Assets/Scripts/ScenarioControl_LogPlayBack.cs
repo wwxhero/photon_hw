@@ -10,6 +10,14 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public LogItem.LogType [] m_logTypes;
 	public GameObject [] m_prefabs = new GameObject[(int)LogItem.LogType.total];
 	public bool m_debug = true;
+	public static string[] s_lstNetworkingJoints = {
+									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
+									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
+									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
+									"lowerleg01.R",		"foot.L",			"clavicle.L",		"toe2-1.L",
+									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
+									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
+								};
 	[HideInInspector] public int c_nFrameBase = int.MaxValue;
 	[HideInInspector] public int c_nFrameMax = 0;
 	[HideInInspector] public int m_nFrame = 0;
@@ -28,6 +36,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 						, m_logFiles[log_i]
 						, m_records
 						, m_id2names
+						, ref s_lstNetworkingJoints
 						, ref c_nFrameBase
 						, ref c_nFrameMax
 						, m_debug);
