@@ -24,8 +24,9 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour
 
 	void AssociatePhy_IK()
 	{
-		RootMotion.FinalIK.VRIK ik = m_refHostIk.GetComponent<RootMotion.FinalIK.VRIK>();
-		Transform targets_root = m_refPhysical.transform;
+		RootMotion.FinalIK.VRIK ik = m_refHostIk.AddComponent<RootMotion.FinalIK.VRIK>();
+        ik.AutoDetectReferences();
+        Transform targets_root = m_refPhysical.transform;
 		Transform ik_root = m_refHostIk.transform;
 		ik.solver.spine.headTarget = corres(targets_root, ik_root, ik.references.head);
 		ik.solver.spine.pelvisTarget = corres(targets_root, ik_root, ik.references.pelvis);
