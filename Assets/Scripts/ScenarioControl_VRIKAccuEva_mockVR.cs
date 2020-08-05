@@ -75,6 +75,8 @@ public class ScenarioControl_VRIKAccuEva_mockVR : MonoBehaviour {
 						logger.Initialize(names_arr, false);
 						LoggerAvatar_s logger_s = go.AddComponent<LoggerAvatar_s>();
 						logger_s.Initialize(names_arr, false);
+						LoggerAvatar_l logger_l = go.AddComponent<LoggerAvatar_l>();
+						logger_l.Initialize(names_arr, false);
 					}
 
 					Animator anim = m_refPhysical.GetComponent<Animator>();

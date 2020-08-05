@@ -371,6 +371,8 @@ public class ScenarioControl : MonoBehaviour
 								logger.Initialize(s_lstNetworkingJoints, true);
 								LoggerAvatar_s logger_s = ped.AddComponent<LoggerAvatar_s>();
 								logger_s.Initialize(s_lstNetworkingJoints, true);
+								LoggerAvatar_l logger_l = ped.AddComponent<LoggerAvatar_l>();
+								logger_l.Initialize(s_lstNetworkingJoints, true);
 								if (ownPed)
 								{
 									m_ownPed = ped;

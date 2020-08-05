@@ -49,9 +49,14 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	void Update () {
 		bool played = UpdateFrame();
 		m_play = m_play && played;
-		if (m_play)
-			m_nFrame ++;
-	}
+        if (m_play)
+            m_nFrame++;
+        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+            m_nFrame--;
+        else if (Input.GetKeyUp(KeyCode.RightArrow))
+            m_nFrame++;
+
+    }
 
 	void UpdateObject(LogItem item)
 	{

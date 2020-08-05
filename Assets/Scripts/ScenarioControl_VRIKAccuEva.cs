@@ -87,7 +87,7 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour
 				{
 					Dictionary<string, Object> names = new Dictionary<string, Object>();
 					DebugLog.Warning("Variable Joints: {");
-					for (int i_go = 0; i_go < gos.Length; i_go++)
+					for (int i_go = 1; i_go < gos.Length; i_go++)
 					{
 						GameObject go = gos[i_go];
 						JointsPoolVarTest joints = go.GetComponent<JointsPoolVarTest>();
@@ -114,6 +114,8 @@ public class ScenarioControl_VRIKAccuEva : MonoBehaviour
 						logger.Initialize(names_arr, false);
 						LoggerAvatar_s logger_s = go.AddComponent<LoggerAvatar_s>();
 						logger_s.Initialize(names_arr, false);
+						LoggerAvatar_l logger_l = go.AddComponent<LoggerAvatar_l>();
+						logger_l.Initialize(names_arr, false);
 					}
 					Animator anim = m_refPhysical.GetComponent<Animator>();
 					anim.runtimeAnimatorController = m_refControllers[m_state];
