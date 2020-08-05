@@ -10,6 +10,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public LogItem.LogType [] m_logTypes;
 	public GameObject [] m_prefabs = new GameObject[(int)LogItem.LogType.total];
 	public bool m_debug = true;
+	public bool m_localjoint = true;
 	public static string[] s_lstNetworkingJoints = {
 									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
 									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
@@ -83,7 +84,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 		{
 			LogGOPed ped = obj.AddComponent<LogGOPed>();
 			go = ped;
-			ped.Initialize();
+			ped.Initialize(m_localjoint);
 		}
 		else
 			go = obj.AddComponent<LogGOVeh>();
