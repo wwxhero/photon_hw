@@ -8,7 +8,8 @@ using Id2GO = System.Collections.Generic.Dictionary<int, LogGO>;
 public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
-	public GameObject [] m_prefabs = new GameObject[(int)LogItem.LogType.total];
+	public GameObject [] m_prefabsPed;
+    public GameObject [] m_prefabsVeh;
 	public bool m_debug = true;
 	public bool m_localjoint = true;
 	public static string[] s_lstNetworkingJoints = {
@@ -77,7 +78,23 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 
 	void CreateObject(LogItem item)
 	{
-		GameObject obj = Instantiate(m_prefabs[(int)item.type], item.transforms[0].pos, item.transforms[0].ori);
+		GameObject [] prefabs = null;
+		switch (item.type)
+		{
+		case LogItem.LogType.ped:
+			prefabs = m_prefabsPed;
+			break;
+		case LogItem.LogType.veh:
+			prefabs = m_prefabsVeh;
+			break;
+		default:
+			Debug.Assert(false);
+			break;
+		}
+		int n_prefabs = prefabs.Length;
+		int i_prefabs = item.id % n_prefabs;
+
+		GameObject obj = Instantiate(prefabs[i_prefabs], item.transforms[0].pos, item.transforms[0].ori);
 		string name = null;
 		if (m_id2names.TryGetValue(item.id, out name))
 			obj.name = name;

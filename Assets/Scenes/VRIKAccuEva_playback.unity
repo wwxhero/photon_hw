@@ -212,10 +212,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_logFiles:
-  - MakeHumanModel_TPos
-  m_logTypes: 00000000
-  m_prefabs:
-  - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
+  - jesse
+  - jesse_physical
+  m_logTypes: 0000000000000000
+  m_prefabsPed:
+  - {fileID: 1309397083688766, guid: 3d598a23aa5d21c46a35c723ccacb7da, type: 2}
+  - {fileID: 1781638903872728, guid: d0cc64d89481bbb44b4b52537510f114, type: 2}
+  m_prefabsVeh: []
   m_debug: 1
   m_localjoint: 0
   c_nFrameBase: 2147483647
