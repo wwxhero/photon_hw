@@ -20,13 +20,13 @@ public class LogGOPed : LogGO {
 		i_joint ++;
 		JointsPool.Traverse_d(transform
 			, (Transform this_t) => {
-                    string name = this_t.name.Trim();
+					string name = this_t.name.Trim();
 					if (names.Contains(name))
 					{
 						m_joints[i_joint] = this_t;
-						err_joint = transform.gameObject.GetComponent<ErrorTr>();
+						err_joint = this_t.gameObject.GetComponent<ErrorTr>();
 						if (null == err_joint)
-							err_joint = transform.gameObject.AddComponent<ErrorTr>();
+							err_joint = this_t.gameObject.AddComponent<ErrorTr>();
 						m_jointerrs[i_joint] = err_joint;
 						i_joint ++;
 					}
@@ -45,7 +45,7 @@ public class LogGOPed : LogGO {
 				m_joints[i].localPosition = item.transforms[i].pos;
 				m_joints[i].localRotation = item.transforms[i].ori;
 				m_joints[i].localScale = item.transforms[i].scl;
-                m_jointerrs[i].m_Error = item.transforms[i].err;
+				m_jointerrs[i].Error = item.transforms[i].err;
 			}
 		}
 		else
@@ -54,9 +54,12 @@ public class LogGOPed : LogGO {
 			{
 				m_joints[i].position = item.transforms[i].pos;
 				m_joints[i].rotation = item.transforms[i].ori;
-                //m_joints[i].scale = item.transforms[i].scl;
-                m_jointerrs[i].m_Error = item.transforms[i].err;
-            }
+				Debug.Assert(2.0f == item.transforms[i].scl.x
+							&& 2.0f == item.transforms[i].scl.y
+							&& 2.0f == item.transforms[i].scl.z);
+				//m_joints[i].lossyScale = item.transforms[i].scl;
+				m_jointerrs[i].Error = item.transforms[i].err;
+			}
 		}
 	}
 }
