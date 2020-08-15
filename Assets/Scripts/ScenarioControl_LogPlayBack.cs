@@ -104,10 +104,21 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 		LogGO go = null;
 		if (LogItem.LogType.ped == item.type)
 		{
-			LogGOPed ped = obj.AddComponent<LogGOPed>();
-			go = ped;
-			ped.Initialize(m_localjoint);
-		}
+			Transform_log [] trans = item.transforms;
+			bool hasErr = false;
+			for (int i_tran = 0
+				; !hasErr
+				  && i_tran < trans.Length
+				; i_tran ++)
+			{
+				hasErr = (Transform_log.InvalidJTErr != trans[i_tran].err);
+            }
+			if (hasErr && null == obj.GetComponent<JointErrHighlighter>())
+				obj.AddComponent<JointErrHighlighter>();
+            LogGOPed ped = obj.AddComponent<LogGOPed>();
+            go = ped;
+            ped.Initialize(m_localjoint);
+        }
 		else
 			go = obj.AddComponent<LogGOVeh>();
 		go.Play(item);

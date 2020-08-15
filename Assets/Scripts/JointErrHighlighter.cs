@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class JointErrHighlighter : MonoBehaviour {
-	[Range(0, 2*Mathf.PI)] public float m_errNormMax = 2 * Mathf.PI;
+	[Range(0.1f, 2*Mathf.PI)] public float m_errNormMax = 2 * Mathf.PI;
 	List<Mesh>			m_meshes = new List<Mesh>();
 	List<ErrorTr[]>		m_jointErr = new List<ErrorTr[]>();
 	readonly Color 		c_clrErr0 = Color.blue;

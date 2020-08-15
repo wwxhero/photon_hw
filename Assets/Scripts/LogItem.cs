@@ -12,6 +12,8 @@ public struct Transform_log
 	public Vector3 pos;
 	public Quaternion ori;
 	public Vector3 scl;
+	public float err;
+    public static float InvalidJTErr = -1.0f;
 };
 
 public class LogItem
@@ -117,6 +119,7 @@ public class LogItem
 			transforms[i_tran].scl.x = 1;
 			transforms[i_tran].scl.y = 1;
 			transforms[i_tran].scl.z = 1;
+			transforms[i_tran].err 	 = Transform_log.InvalidJTErr;
 		}
 		return valid_parse; //todo: parse an array of transforms from buf
 	}
@@ -149,6 +152,7 @@ public class LogItem
 			transforms[i_tran].scl.x = v[0];
 			transforms[i_tran].scl.y = v[1];
 			transforms[i_tran].scl.z = v[2];
+			transforms[i_tran].err 	 = Transform_log.InvalidJTErr;
 		}
 		return valid_parse; //todo: parse an array of transforms from buf
 	}
