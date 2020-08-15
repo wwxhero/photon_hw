@@ -161,21 +161,17 @@ public class LogItem
 	static bool ParseRow4Ped_e(BufferedStream buff, Transform_log[] transforms, int n_trans)
 	{
 		bool valid_parse = true;
-		float [] v = new float[1];
+		float v = 0;
 		for (int i_tran = 0
 			; i_tran < n_trans
 			&& valid_parse
 			; i_tran ++)
 		{
-			for (int i = 0
-				; i < 1
-				&& valid_parse
-				; i ++)
-			{
-				string field;
-				NextField(buff, out field);
-				valid_parse = float.TryParse(field, out v[i]);
-			}
+
+			string field;
+			NextField(buff, out field);
+			valid_parse = float.TryParse(field, out v);
+
 			transforms[i_tran].ori.w = 1;
 			transforms[i_tran].ori.x = 0;
 			transforms[i_tran].ori.y = 0;
@@ -186,7 +182,7 @@ public class LogItem
 			transforms[i_tran].scl.x = 1;
 			transforms[i_tran].scl.y = 1;
 			transforms[i_tran].scl.z = 1;
-			transforms[i_tran].err 	 = v[0];
+			transforms[i_tran].err 	 = v;
 		}
 		return valid_parse; //todo: parse an array of transforms from buf
 	}

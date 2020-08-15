@@ -21,10 +21,10 @@ public class JointErrHighlighter : MonoBehaviour {
 						 , bw.weight1
 						 , bw.weight2
 						 , bw.weight3};
-			float [] e = {joints_err[bw.boneIndex0].m_Error
-						, joints_err[bw.boneIndex1].m_Error
-						, joints_err[bw.boneIndex2].m_Error
-						, joints_err[bw.boneIndex3].m_Error};
+			float [] e = {joints_err[bw.boneIndex0].Error
+						, joints_err[bw.boneIndex1].Error
+						, joints_err[bw.boneIndex2].Error
+						, joints_err[bw.boneIndex3].Error};
 			float e_sigma = ( w[0] * e[0]
 						+ w[1] * e[1]
 						+ w[2] * e[2]
