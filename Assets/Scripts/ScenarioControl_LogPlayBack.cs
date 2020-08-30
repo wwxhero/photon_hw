@@ -8,8 +8,18 @@ using Id2GO = System.Collections.Generic.Dictionary<int, LogGO>;
 public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	public string [] m_logFiles;
 	public LogItem.LogType [] m_logTypes;
-	public GameObject [] m_prefabs = new GameObject[(int)LogItem.LogType.total];
+	public GameObject [] m_prefabsPed;
+    public GameObject [] m_prefabsVeh;
 	public bool m_debug = true;
+	public bool m_localjoint = true;
+	public static string[] s_lstNetworkingJoints = {
+									"root",				"upperleg01.R",		"lowerleg01.L",		"spine02",
+									"foot.R",  			"clavicle.R",		"neck02",			"upperarm01.R",
+									"lowerarm01.L", 	"wrist.L", 			"upperleg01.L", 	"spine04",
+									"lowerleg01.R",		"foot.L",			"clavicle.L",		"toe2-1.L",
+									"upperarm01.L",		"head",				"lowerarm01.R",		"wrist.R",
+									"toe2-1.R",			"upperleg02.L",		"upperleg02.R"
+								};
 	[HideInInspector] public int c_nFrameBase = int.MaxValue;
 	[HideInInspector] public int c_nFrameMax = 0;
 	[HideInInspector] public int m_nFrame = 0;
@@ -28,6 +38,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 						, m_logFiles[log_i]
 						, m_records
 						, m_id2names
+						, ref s_lstNetworkingJoints
 						, ref c_nFrameBase
 						, ref c_nFrameMax
 						, m_debug);
@@ -39,9 +50,14 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 	void Update () {
 		bool played = UpdateFrame();
 		m_play = m_play && played;
-		if (m_play)
-			m_nFrame ++;
-	}
+        if (m_play)
+            m_nFrame++;
+        else if (Input.GetKeyUp(KeyCode.LeftArrow))
+            m_nFrame--;
+        else if (Input.GetKeyUp(KeyCode.RightArrow))
+            m_nFrame++;
+
+    }
 
 	void UpdateObject(LogItem item)
 	{
@@ -62,7 +78,23 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 
 	void CreateObject(LogItem item)
 	{
-		GameObject obj = Instantiate(m_prefabs[(int)item.type], item.transforms[0].pos, item.transforms[0].ori);
+		GameObject [] prefabs = null;
+		switch (item.type)
+		{
+		case LogItem.LogType.ped:
+			prefabs = m_prefabsPed;
+			break;
+		case LogItem.LogType.veh:
+			prefabs = m_prefabsVeh;
+			break;
+		default:
+			Debug.Assert(false);
+			break;
+		}
+		int n_prefabs = prefabs.Length;
+		int i_prefabs = item.id % n_prefabs;
+
+		GameObject obj = Instantiate(prefabs[i_prefabs], item.transforms[0].pos, item.transforms[0].ori);
 		string name = null;
 		if (m_id2names.TryGetValue(item.id, out name))
 			obj.name = name;
@@ -74,7 +106,7 @@ public class ScenarioControl_LogPlayBack : MonoBehaviour {
 		{
 			LogGOPed ped = obj.AddComponent<LogGOPed>();
 			go = ped;
-			ped.Initialize();
+			ped.Initialize(m_localjoint);
 		}
 		else
 			go = obj.AddComponent<LogGOVeh>();

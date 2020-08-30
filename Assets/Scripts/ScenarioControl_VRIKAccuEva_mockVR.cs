@@ -23,7 +23,8 @@ public class ScenarioControl_VRIKAccuEva_mockVR : MonoBehaviour {
 				GameObject [] gos = {m_refPhysical, m_refHostIk};
 				if (0 == m_state)
 				{
-					RootMotion.FinalIK.VRIK ik = m_refHostIk.GetComponent<RootMotion.FinalIK.VRIK>();
+					RootMotion.FinalIK.VRIK ik = m_refHostIk.AddComponent<RootMotion.FinalIK.VRIK>();
+					ik.AutoDetectReferences();
 					MockPhysics trackers_mp = m_refPhysical.GetComponent<MockPhysics>();
 					Debug.Assert((int)MockPhysics.Mount.total == trackers_mp.m_trackersMt.Length);
 					VRIKCalibrator2.Calibrate(ik
@@ -74,6 +75,8 @@ public class ScenarioControl_VRIKAccuEva_mockVR : MonoBehaviour {
 						logger.Initialize(names_arr, false);
 						LoggerAvatar_s logger_s = go.AddComponent<LoggerAvatar_s>();
 						logger_s.Initialize(names_arr, false);
+						LoggerAvatar_l logger_l = go.AddComponent<LoggerAvatar_l>();
+						logger_l.Initialize(names_arr, false);
 					}
 
 					Animator anim = m_refPhysical.GetComponent<Animator>();
