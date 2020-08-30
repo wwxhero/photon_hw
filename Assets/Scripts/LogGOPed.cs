@@ -54,9 +54,9 @@ public class LogGOPed : LogGO {
 			{
 				m_joints[i].position = item.transforms[i].pos;
 				m_joints[i].rotation = item.transforms[i].ori;
-				Debug.Assert(2.0f == item.transforms[i].scl.x
-							&& 2.0f == item.transforms[i].scl.y
-							&& 2.0f == item.transforms[i].scl.z);
+				//Debug.Assert(2.0f == item.transforms[i].scl.x
+				//			&& 2.0f == item.transforms[i].scl.y
+				//			&& 2.0f == item.transforms[i].scl.z);
 				//m_joints[i].lossyScale = item.transforms[i].scl;
 				m_jointerrs[i].Error = item.transforms[i].err;
 			}
