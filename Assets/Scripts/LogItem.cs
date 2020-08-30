@@ -12,6 +12,8 @@ public struct Transform_log
 	public Vector3 pos;
 	public Quaternion ori;
 	public Vector3 scl;
+	public float err;
+	public static float InvalidJTErr = -1.0f;
 };
 
 public class LogItem
@@ -25,7 +27,8 @@ public class LogItem
 	static bool c_debug = false;
 	static int m_nId = 0;
 	static readonly string c_filesuffix = ".csv";
-	public delegate bool ParseRowTransform(BufferedStream buff, Transform_log[] transforms, int n_trans);
+	public delegate bool DG_ParseRowTransform(BufferedStream buff, Transform_log[] transforms, int n_trans);
+	public delegate void DG_JointRecords(List<Id2Item> records0, List<Id2Item> records1); //1 joints into 0
 
 	static bool NextLine(BufferedStream buff, ref string line)
 	{
@@ -117,6 +120,7 @@ public class LogItem
 			transforms[i_tran].scl.x = 1;
 			transforms[i_tran].scl.y = 1;
 			transforms[i_tran].scl.z = 1;
+			transforms[i_tran].err 	 = Transform_log.InvalidJTErr;
 		}
 		return valid_parse; //todo: parse an array of transforms from buf
 	}
@@ -149,6 +153,36 @@ public class LogItem
 			transforms[i_tran].scl.x = v[0];
 			transforms[i_tran].scl.y = v[1];
 			transforms[i_tran].scl.z = v[2];
+			transforms[i_tran].err 	 = Transform_log.InvalidJTErr;
+		}
+		return valid_parse; //todo: parse an array of transforms from buf
+	}
+
+	static bool ParseRow4Ped_e(BufferedStream buff, Transform_log[] transforms, int n_trans)
+	{
+		bool valid_parse = true;
+		float v = 0;
+		for (int i_tran = 0
+			; i_tran < n_trans
+			&& valid_parse
+			; i_tran ++)
+		{
+
+			string field;
+			NextField(buff, out field);
+			valid_parse = float.TryParse(field, out v);
+
+			transforms[i_tran].ori.w = 1;
+			transforms[i_tran].ori.x = 0;
+			transforms[i_tran].ori.y = 0;
+			transforms[i_tran].ori.z = 0;
+			transforms[i_tran].pos.x = 0;
+			transforms[i_tran].pos.y = 0;
+			transforms[i_tran].pos.z = 0;
+			transforms[i_tran].scl.x = 1;
+			transforms[i_tran].scl.y = 1;
+			transforms[i_tran].scl.z = 1;
+			transforms[i_tran].err 	 = v;
 		}
 		return valid_parse; //todo: parse an array of transforms from buf
 	}
@@ -179,18 +213,18 @@ public class LogItem
 		transforms[0].scl.y = 1;
 		transforms[0].scl.z = 1;
 
-		return valid_parse; //todo: parse an array of transforms from buf
+		return valid_parse;
 	}
 
 	static int Parse4Veh(string name, List<Id2Item> records)
 	{
 		string path = name + c_filesuffix;
-        string[] dummy = null;
-        return ParseTable(path, ParseRow4Veh, records, 7, true, LogType.veh, ref dummy);
+		string[] dummy = null;
+		return ParseTable(path, ParseRow4Veh, records, 7, true, LogType.veh, ref dummy);
 		//each vehicle has an id, vehicles are aggregated in this log file
 	}
 
-	static int ParseTable(string path, ParseRowTransform parser_row_trans , List<Id2Item> records, int u_joint, bool aggregated_entities, LogType type, ref string[] joint_names)
+	static int ParseTable(string path, DG_ParseRowTransform parser_row_trans , List<Id2Item> records, int u_joint, bool aggregated_entities, LogType type, ref string[] joint_names)
 	{
 		List<LogItem> rawRecords = new List<LogItem>();
 
@@ -230,15 +264,15 @@ public class LogItem
 				&& 0 == ((n_fields - n_skip_fields) % u_joint))
 			{
 				int i_dot = strLine.LastIndexOf('.', i_start, n_skip);
-                string name = strLine.Substring(i_start_m, i_dot - i_start_m);
-                joint_names_2.Add(name.Trim());
+				string name = strLine.Substring(i_start_m, i_dot - i_start_m);
+				joint_names_2.Add(name.Trim());
 			}
 
 			n_fields ++;
 		}
 
-        if (retrive_joint_names)
-            joint_names = joint_names_2.ToArray();
+		if (retrive_joint_names)
+			joint_names = joint_names_2.ToArray();
 
 		int n_joints_u = n_fields - n_skip_fields;
 		int n_joints = n_joints_u / u_joint;
@@ -296,52 +330,105 @@ public class LogItem
 		return nItem;
 	}
 
-	static void Parse4Ped(string name, List<Id2Item> records, ref string[] joint_names)
+	static void JointPedScale(List<Id2Item> records_RT, List<Id2Item> records_S)
 	{
-		List<Id2Item> records_RT = records;
-		List<Id2Item> records_S = new List<Id2Item>();
-		string path_rt = name + c_filesuffix;
-		string path_s = name + "_s" + c_filesuffix;
-		ParseTable(path_rt, ParseRow4Ped_rt, records_RT, 7, false, LogType.ped, ref joint_names);
-		if (File.Exists(path_s))
+		Id2Item id2Item = new Id2Item();
+		records_S.Add(id2Item);
+		id2Item[m_nId] = new LogItem{
+								  id = m_nId
+								, type = LogType.ped
+								, nFrame = int.MaxValue
+								, ticks = int.MaxValue
+								, transforms = null
+							};
+		int i_RT = 0;
+		int i_S = 0;
+		while (i_RT < records_RT.Count
+			&& i_S < records_S.Count - 1)
 		{
-            string[] dummy = null;
-            ParseTable(path_s, ParseRow4Ped_s, records_S, 3, false, LogType.ped, ref dummy);
-			Id2Item id2Item = new Id2Item();
-			records_S.Add(id2Item);
-			id2Item[m_nId] = new LogItem{
-									  id = m_nId
-									, type = LogType.ped
-									, nFrame = int.MaxValue
-									, ticks = int.MaxValue
-									, transforms = null
-								};
-			int i_RT = 0;
-			int i_S = 0;
-			while (i_RT < records_RT.Count
-				&& i_S < records_S.Count - 1)
+			int n_l_s = (records_S[i_S])[m_nId].nFrame;
+			int n_r_s = (records_S[i_S + 1])[m_nId].nFrame;
+			int n_rt = (records_RT[i_RT])[m_nId].nFrame;
+			if (n_r_s <= n_rt) //n_r_s <= n_rt
+				i_S ++;
+			Debug.Assert((n_rt = (records_RT[i_RT])[m_nId].nFrame) < (n_r_s = (records_S[i_S + 1])[m_nId].nFrame)
+						&& (n_l_s = (records_S[i_S])[m_nId].nFrame) <= (n_rt = (records_RT[i_RT])[m_nId].nFrame));
+			Transform_log [] trans_dst = (records_RT[i_RT])[m_nId].transforms;
+			Transform_log [] trans_src_rt = (records_RT[i_RT])[m_nId].transforms;
+			Transform_log [] trans_src_s = (records_S[i_S])[m_nId].transforms;
+			Debug.Assert(trans_dst.Length == trans_src_s.Length
+						&& trans_dst.Length == trans_src_rt.Length);
+			for (int i_tran = 0; i_tran < trans_dst.Length; i_tran ++)
 			{
-				int n_l_s = (records_S[i_S])[m_nId].nFrame;
-				int n_r_s = (records_S[i_S + 1])[m_nId].nFrame;
-				int n_rt = (records_RT[i_RT])[m_nId].nFrame;
-				if (n_r_s <= n_rt) //n_r_s <= n_rt
-					i_S ++;
-				Debug.Assert((n_rt = (records_RT[i_RT])[m_nId].nFrame) < (n_r_s = (records_S[i_S + 1])[m_nId].nFrame)
-							&& (n_l_s = (records_S[i_S])[m_nId].nFrame) <= (n_rt = (records_RT[i_RT])[m_nId].nFrame));
-				Transform_log [] trans_dst = (records[i_RT])[m_nId].transforms;
-				Transform_log [] trans_src_rt = (records_RT[i_RT])[m_nId].transforms;
-				Transform_log [] trans_src_s = (records_S[i_S])[m_nId].transforms;
-				Debug.Assert(trans_dst.Length == trans_src_s.Length
-							&& trans_dst.Length == trans_src_rt.Length);
-				for (int i_tran = 0; i_tran < trans_dst.Length; i_tran ++)
-				{
-					trans_dst[i_tran].pos = trans_src_rt[i_tran].pos;
-					trans_dst[i_tran].ori = trans_src_rt[i_tran].ori;
-					trans_dst[i_tran].scl = trans_src_s[i_tran].scl;
-				}
-				i_RT ++;
+				trans_dst[i_tran].pos = trans_src_rt[i_tran].pos;
+				trans_dst[i_tran].ori = trans_src_rt[i_tran].ori;
+				trans_dst[i_tran].scl = trans_src_s[i_tran].scl;
+			}
+			i_RT ++;
+		}
+	}
+
+	static void JointPedError(List<Id2Item> records, List<Id2Item> records_e)
+	{
+		Debug.Assert(records.Count == records_e.Count);
+		for (int i = 0; i < records.Count; i ++)
+		{
+			Transform_log[] dst = (records[i])[m_nId].transforms;
+			Transform_log[] src = (records_e[i])[m_nId].transforms;
+			Debug.Assert(dst.Length == src.Length + 1); //entity joint (dst[0]) does not have error
+			for (int j = 1; j < dst.Length; j ++)
+			{
+				dst[j].err = src[j-1].err;
 			}
 		}
+	}
+
+	struct ParamPedAcces
+	{
+		public string path;
+		public DG_ParseRowTransform parser_row;
+		public DG_JointRecords joinner;
+		public int u_joint;
+	};
+
+	static void Parse4Ped(string name, List<Id2Item> records, ref string[] joint_names)
+	{
+		string path_rt = name + c_filesuffix;
+
+		ParamPedAcces [] params_acces = {
+			  new ParamPedAcces
+			{
+				  path = name + "_s" + c_filesuffix
+				, parser_row = ParseRow4Ped_s
+				, joinner = JointPedScale
+				, u_joint = 3
+			}
+			, new ParamPedAcces
+			{
+				  path = name + "_e" + c_filesuffix
+				, parser_row = ParseRow4Ped_e
+				, joinner = JointPedError
+				, u_joint = 1
+			}
+		};
+		ParseTable(path_rt, ParseRow4Ped_rt, records, 7, false, LogType.ped, ref joint_names);
+		for (int i_accs = 0; i_accs < params_acces.Length; i_accs ++)
+		{
+			if (File.Exists(params_acces[i_accs].path))
+			{
+				List<Id2Item> record_accs = new List<Id2Item>();
+				string[] dummy = null;
+				ParseTable(params_acces[i_accs].path
+						, params_acces[i_accs].parser_row
+						, record_accs
+						, params_acces[i_accs].u_joint
+						, false
+						, LogType.ped
+						, ref dummy);
+				params_acces[i_accs].joinner(records, record_accs);
+			}
+		}
+
 	}
 
 	static int N_Frame(Id2Item id2item)
@@ -349,7 +436,7 @@ public class LogItem
 		Debug.Assert(id2item.Count > 0);
 		foreach (var id_item in id2item)
 			return id_item.Value.nFrame;
-        return -1;
+		return -1;
 	}
 
 	static void JointRecord(List<Id2Item> records, List<Id2Item> records_prime)

@@ -212,12 +212,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_logFiles:
-  - jesse
-  - jesse_physical
-  m_logTypes: 0000000000000000
+  - MakeHumanModel_TPos
+  m_logTypes: 00000000
   m_prefabsPed:
-  - {fileID: 1309397083688766, guid: 3d598a23aa5d21c46a35c723ccacb7da, type: 2}
-  - {fileID: 1781638903872728, guid: d0cc64d89481bbb44b4b52537510f114, type: 2}
+  - {fileID: 1425134890698408, guid: a83e4ddc45bb1634da05f2d7527a6539, type: 2}
   m_prefabsVeh: []
   m_debug: 1
   m_localjoint: 0
@@ -300,7 +298,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1079066623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: -6.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
