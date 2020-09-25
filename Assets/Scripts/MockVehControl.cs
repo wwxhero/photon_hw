@@ -13,6 +13,8 @@ public class MockVehControl : VehiControl {
 	List<NetworkVehBehavior> m_vehi = new List<NetworkVehBehavior>();
 	List<float> m_sLen = new List<float>();
 	ScenarioControl m_sceneCtrl = null;
+    enum KeyState { up, down};
+    KeyState m_keyState = KeyState.up;
 	// Use this for initialization
 	void Start () {
 		c_route[0] = transform.Find("Start").position;
@@ -56,7 +58,11 @@ public class MockVehControl : VehiControl {
 			m_sLen.RemoveRange(i_removed, n_removed);
 		}
 
-		if (Input.GetKeyDown(KeyCode.Alpha0))
+        KeyState state_np = KeyState.up;
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        	state_np = KeyState.down;
+        if (KeyState.down == m_keyState
+        	&& KeyState.up == state_np)
 		{
 			Vector3 forward = c_route[1] - c_route[0];
 			Quaternion rot = Quaternion.LookRotation(forward, Vector3.up);
@@ -64,5 +70,6 @@ public class MockVehControl : VehiControl {
 			m_vehi.Add(veh);
 			m_sLen.Add(0);
 		}
+		m_keyState = state_np;
 	}
 }
