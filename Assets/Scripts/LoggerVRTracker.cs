@@ -11,7 +11,7 @@ public class LoggerVRTracker : LoggerObj {
 								, "v1", "v2", "v3"
 								, "a1", "a2", "a3"
 								, "t_res"};
-	public void Initialize(ScenarioControl ctrl)
+	void Start()
 	{
 		base.Initialize(transform.name);
 		string strHeader = c_fields[0];
