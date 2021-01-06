@@ -35,7 +35,7 @@ public class SteamVR_TrackedObject : MonoBehaviour
 	[Tooltip("If not set, relative to parent")]
 	public Transform origin;
 
-	public bool isValid { get; private set; }
+	public bool isValid { get; protected set; }
 
 	private bool m_lock = false;
 	private Vector3 m_posAct = new Vector3(0, 0, 0);
@@ -122,9 +122,9 @@ public class SteamVR_TrackedObject : MonoBehaviour
 		}
 	}
 
-	SteamVR_Events.Action newPosesAction;
+	protected SteamVR_Events.Action newPosesAction;
 
-	SteamVR_TrackedObject()
+	protected SteamVR_TrackedObject()
 	{
 		newPosesAction = SteamVR_Events.NewPosesAction(OnNewPoses);
 	}
