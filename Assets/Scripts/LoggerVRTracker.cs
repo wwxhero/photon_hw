@@ -3,77 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LoggerVRTracker : LoggerObj {
-	List<Transform> m_lstTrans = new List<Transform>();
-	bool m_local;
+	SteamVR_TrackedObjectEx m_tracker;
 	readonly string [] c_fields = {"time", "frame"
-								, "r_w", "r_x", "r_y", "r_z"
-								, "t_x", "t_y", "t_z"};
-	public void Initialize(string[] joints, bool local)
+								, "m11", "m12", "m13", "m14"
+								, "m21", "m22", "m23", "m24"
+								, "m31", "m32", "m33", "m34"
+								, "v1", "v2", "v3"
+								, "a1", "a2", "a3"
+								, "t_res"};
+	public void Initialize(ScenarioControl ctrl)
 	{
-		m_local = local;
-		HashSet<string> names = new HashSet<string>(joints);
 		base.Initialize(transform.name);
-		string strHeader = string.Format("{0}, {1}", c_fields[0], c_fields[1]);
-
-		strHeader += string.Format(", {0}.{1}, {0}.{2}, {0}.{3}, {0}.{4}, {0}.{5}, {0}.{6}, {0}.{7}"
-												, transform.name
-												, c_fields[2], c_fields[3], c_fields[4], c_fields[5]
-												, c_fields[6], c_fields[7], c_fields[8]);
-		m_lstTrans.Add(transform);
-		JointsPool.Traverse_d(
-			  transform
-			, (Transform this_t) => {
-					if (names.Contains(this_t.name))
-					{
-						strHeader += string.Format(", {0}.{1}, {0}.{2}, {0}.{3}, {0}.{4}, {0}.{5}, {0}.{6}, {0}.{7}"
-												, this_t.name
-												, c_fields[2], c_fields[3], c_fields[4], c_fields[5]
-												, c_fields[6], c_fields[7], c_fields[8]);
-						m_lstTrans.Add(this_t);
-					}
-				}
-			, (Transform this_t) => { }
-			);
+		string strHeader = c_fields[0];
+		for (int i_f = 1; i_f < c_fields.Length; i_f ++)
+			strHeader += string.Format(", {0}", c_fields[i_f]);
 		strHeader += "\n";
 		LogOutInPack(strHeader);
+		m_tracker = GetComponent<SteamVR_TrackedObjectEx>();
 	}
 
-    public override void OnLogging(bool delayed)
+	public override void OnLogging(bool delayed)
 	{
-		bool initialized = (null != m_logger);
-		if (!initialized
-			|| delayed)
-			return;
-		Quaternion q;
-		Vector3 t;
-		if (m_local)
-		{
-			q = m_lstTrans[0].localRotation;
-			t = m_lstTrans[0].localPosition;
-		}
-		else
-		{
-			q = m_lstTrans[0].rotation;
-			t = m_lstTrans[0].position;
-		}
-		string strItem = string.Format("{0}, {1}", System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond, Time.frameCount);
-		for (int i = 0; i < m_lstTrans.Count; i ++)
-		{
-			if (m_local)
-			{
-				q = m_lstTrans[i].localRotation;
-				t = m_lstTrans[i].localPosition;
-			}
-			else
-			{
-				q = m_lstTrans[i].rotation;
-				t = m_lstTrans[i].position;
-			}
-			strItem += string.Format(", {0,7:#.0000}, {1,7:#.0000}, {2,7:#.0000}, {3,7:#.0000}, {4,7:#.000}, {5,7:#.000}, {6,7:#.000}"
-										, q.w, q.x, q.y, q.z
-										, t.x, t.y, t.z);
-		}
-		strItem += "\n";
-		LogOutInPack(strItem);
+        if (null == m_tracker
+            || !delayed) //not intialized
+            return;
+		var m = m_tracker.m_pose.mDeviceToAbsoluteTracking;
+		var v = m_tracker.m_pose.vVelocity;
+		var av = m_tracker.m_pose.vAngularVelocity;
+		int res = (int)m_tracker.m_pose.eTrackingResult;
+		string strLog = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, {18}, {19}, {20}\n"
+							, System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond
+							, Time.frameCount
+							, m.m0, m.m1, m.m2, m.m3
+							, m.m4, m.m5, m.m6, m.m7
+							, m.m8, m.m9, m.m10, m.m11
+							, v.v0, v.v1, v.v2
+							, av.v0, av.v1, av.v2
+							, res);
+		LogOutInPack(strLog);
 	}
 }

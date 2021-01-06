@@ -9,16 +9,11 @@ using Valve.VR;
 
 public class SteamVR_TrackedObjectEx : SteamVR_TrackedObject
 {
-    LoggerObj m_logger;
     int m_cntFrame = 0;
+    public TrackedDevicePose_t m_pose;
     public SteamVR_TrackedObjectEx()
     {
         newPosesAction = SteamVR_Events.NewPosesAction(OnNewPoses);
-    }
-
-    private void Start()
-    {
-        m_logger = GetComponent<LoggerObj>();
     }
 
     private void OnNewPoses(TrackedDevicePose_t[] poses)
@@ -48,8 +43,6 @@ public class SteamVR_TrackedObjectEx : SteamVR_TrackedObject
 
         var pose = new SteamVR_Utils.RigidTransform(poses[i].mDeviceToAbsoluteTracking);
 
-
-
         if (origin != null)
         {
             transform.position = origin.transform.TransformPoint(pose.pos);
@@ -59,7 +52,9 @@ public class SteamVR_TrackedObjectEx : SteamVR_TrackedObject
         {
             transform.localPosition = pose.pos;
             transform.localRotation = pose.rot;
-        }        
+        }
+
+        m_pose = poses[i];
     }
 
 }
